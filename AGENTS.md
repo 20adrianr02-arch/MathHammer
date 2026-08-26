@@ -91,3 +91,24 @@ Este proyecto mantiene la memoria operativa en `CONTEXT.md`. Todo agente debe:
 5. Completar **Traspaso a la siguiente sesión** al terminar.
 
 Las reglas detalladas de mantenimiento están dentro de `CONTEXT.md`.
+
+## 9. Orquestación de Agentes
+
+El proyecto se organiza con un agente padre y dos agentes hijos, definidos en
+`.opencode/agents/`:
+
+| Agente | Rol | Modo |
+| :--- | :--- | :--- |
+| `techlead` | Agente padre: planifica, delega, audita contra el DoD e integra. Único que committea y hace push. | `primary` (agente por defecto) |
+| `backend` | Desarrolla el backend (ASP.NET Core / C# / xUnit). | `subagent` |
+| `frontend` | Desarrolla el frontend (React / TypeScript / Tailwind). | `subagent` |
+
+Reglas de coordinación:
+
+1. El `techlead` define el **contrato de API** (endpoints, tipos JSON y nombres en
+   español) antes de delegar, para evitar interfaces incompatibles.
+2. Los agentes `backend` y `frontend` **no committean ni hacen push**; entregan
+   código y el `techlead` audita e integra.
+3. Todos leen y actualizan `CONTEXT.md` según sus reglas de mantenimiento.
+4. El `techlead` valida el trabajo de los hijos contra este `AGENTS.md` y el
+   Definition of Done antes de fusionar en `main`.

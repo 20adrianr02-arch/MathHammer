@@ -1,0 +1,27 @@
+# Secrets locales (nunca commitear)
+.env
+.env.*
+!.env.example
+.opencode/context7.key
+.opencode/secrets/
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# Node / React
+node_modules/
+dist/
+build/
+.vite/
+coverage/
+*.tsbuildinfo
+
+# Entorno / editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

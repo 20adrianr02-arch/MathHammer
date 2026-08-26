@@ -1,11 +1,12 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "default_agent": "techlead",
   "mcp": {
     "context7": {
       "type": "remote",
       "url": "https://mcp.context7.com/mcp",
       "headers": {
-        "Authorization": "Bearer {env:CONTEXT7_API_KEY}"
+        "CONTEXT7_API_KEY": "{file:.opencode/context7.key}"
       },
       "enabled": true
     }
