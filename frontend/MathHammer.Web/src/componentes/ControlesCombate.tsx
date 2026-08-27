@@ -1,0 +1,59 @@
+interface PropiedadesCampo {
+  etiqueta: string
+  nombre: string
+  tipo?: 'texto' | 'number'
+  valor: string
+  alCambiar: (valor: string) => void
+  sufijo?: string
+}
+
+export function CampoCombate({ etiqueta, nombre, tipo = 'number', valor, alCambiar, sufijo }: PropiedadesCampo) {
+  return (
+    <label className="campo">
+      <span className="campo__etiqueta">{etiqueta}</span>
+      <span className="campo__control">
+        <input name={nombre} type={tipo} value={valor} onChange={(evento) => alCambiar(evento.target.value)} />
+        {sufijo && <span className="campo__sufijo">{sufijo}</span>}
+      </span>
+    </label>
+  )
+}
+
+interface PropiedadesSelector {
+  etiqueta: string
+  nombre: string
+  valor: string
+  opciones: string[]
+  alCambiar: (valor: string) => void
+}
+
+export function SelectorCombate({ etiqueta, nombre, valor, opciones, alCambiar }: PropiedadesSelector) {
+  return (
+    <label className="campo">
+      <span className="campo__etiqueta">{etiqueta}</span>
+      <select name={nombre} value={valor} onChange={(evento) => alCambiar(evento.target.value)}>
+        {opciones.map((opcion) => <option key={opcion}>{opcion}</option>)}
+      </select>
+    </label>
+  )
+}
+
+interface PropiedadesHabilidad {
+  texto: string
+  activa: boolean
+  alCambiar: (activa: boolean) => void
+  selector?: boolean
+  valorSelector?: string
+  alCambiarSelector?: (valor: string) => void
+}
+
+export function HabilidadCombate({ texto, activa, alCambiar, selector = false, valorSelector, alCambiarSelector }: PropiedadesHabilidad) {
+  return (
+    <label className={`habilidad ${activa ? 'habilidad--activa' : ''}`}>
+      <input type="checkbox" checked={activa} onChange={(evento) => alCambiar(evento.target.checked)} />
+      <span className="habilidad__marca" />
+      <span>{texto}</span>
+      {selector && valorSelector && alCambiarSelector && <select aria-label="Cantidad de golpes sostenidos" value={valorSelector} onChange={(evento) => alCambiarSelector(evento.target.value)}><option>1</option><option>2</option><option>3</option></select>}
+    </label>
+  )
+}

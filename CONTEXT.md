@@ -36,11 +36,11 @@
 ## Estado actual
 
 - **Estado:** Completado
-- **Última actualización:** 2026-08-26 23:18 CEST
-- **Tarea:** Mejorar la organización documental y de configuración sin implementar código.
-- **Objetivo inmediato:** Dejar preparado el repositorio para crear posteriormente los proyectos ejecutables con configuración reproducible y contrato sin ambigüedades.
+- **Última actualización:** 2026-08-27 18:52 CEST
+- **Tarea:** Ajustar la tipografía y composición visual de la maqueta web interactiva.
+- **Objetivo inmediato:** Mostrar `MATH HAMMER` centrado con tipografía antigua y usar una tipografía técnica para el formulario, manteniendo el estado local sin backend ni cálculos.
 - **Bloqueos:** Ninguno conocido.
-- **Próxima acción:** Crear la solución .NET, la aplicación web y la aplicación Flutter en una tarea independiente.
+- **Próxima acción:** Revisar visualmente la nueva tipografía y continuar con la integración cuando exista el backend.
 
 ## Contexto del proyecto
 
@@ -48,13 +48,13 @@
 - **Backend:** ASP.NET Core (.NET 8/9) con Minimal APIs, pruebas con xUnit + FluentAssertions.
 - **Frontend:** React 19 + TypeScript + Tailwind CSS (Vite), gráficos con Recharts.
 - **Orquestación:** agente `techlead` (padre) + subagentes `backend` y `frontend`.
-- **Estado de implementación:** Pendiente de confirmar; aún no hay código de aplicación.
+- **Estado de implementación:** Maqueta web estática inicial completada; backend y lógica de combate siguen pendientes.
 
 ## Objetivos y alcance
 
 ### Objetivos activos
 
-- Pendiente de definir con el usuario.
+- Continuar con la auditoría visual y técnica del frontend por `techlead`.
 
 ### Fuera de alcance
 
@@ -64,7 +64,7 @@
 
 | Archivo | Propósito | Estado | Última modificación registrada |
 |---|---|---|---|
-| `CONTEXT.md` | Memoria persistente de sesiones | En curso | 2026-08-26 23:18 CEST |
+| `CONTEXT.md` | Memoria persistente de sesiones | En curso | 2026-08-27 18:28 CEST |
 | `AGENTS.md` | Instrucciones para agentes y contexto inicial | Completado | 2026-08-26 22:19 CEST |
 | `opencode.json` | Configuración de OpenCode, MCP y agente por defecto (en la raíz) | Completado | 2026-08-26 22:39 CEST |
 | `.opencode/agents/techlead.md` | Agente padre: planifica, delega, audita e integra | Completado | 2026-08-26 22:19 CEST |
@@ -75,7 +75,7 @@
 | `README.md` | Presentación inicial y estado del proyecto | Completado | 2026-08-26 23:18 CEST |
 | `LICENSE` | Licencia MIT del proyecto | Existente | 2026-08-26 22:04 CEST |
 | `BACKLOG.md` | Historias de usuario del proyecto | Completado | 2026-08-26 22:50 CEST |
-| `docs/contrato-api.md` | Contrato JSON de entrada y salida de la API de combate | Completado | 2026-08-26 23:04 CEST |
+| `docs/contrato-api.md` | Contrato JSON de entrada y salida de la API de combate | Completado | 2026-08-27 00:12 CEST |
 | `.opencode/.gitignore` | Exclusiones de dependencias locales de OpenCode | Completado | 2026-08-26 23:18 CEST |
 | `.opencode/package.json` | Dependencia local del plugin de OpenCode | Completado | 2026-08-26 23:18 CEST |
 | `.opencode/package-lock.json` | Versiones bloqueadas de dependencias de OpenCode | Completado | 2026-08-26 23:18 CEST |
@@ -84,8 +84,20 @@
 | `src/MathHammer.Api/Simulacion/` | Futura ubicación del motor de simulación | Completado | 2026-08-26 23:10 CEST |
 | `tests/MathHammer.Pruebas/Reglas/` | Futura ubicación de pruebas de reglas | Completado | 2026-08-26 23:10 CEST |
 | `tests/MathHammer.Pruebas/Simulacion/` | Futura ubicación de pruebas de simulación | Completado | 2026-08-26 23:10 CEST |
-| `frontend/MathHammer.Web/src/` | Futura ubicación del código fuente web | Completado | 2026-08-26 23:10 CEST |
-| `frontend/MathHammer.Web/public/` | Futura ubicación de recursos públicos web | Completado | 2026-08-26 23:10 CEST |
+| `frontend/MathHammer.Web/package.json` | Dependencias y scripts del proyecto web | Completado | 2026-08-27 00:28 CEST |
+| `frontend/MathHammer.Web/package-lock.json` | Bloqueo de dependencias del proyecto web | Completado | 2026-08-27 00:28 CEST |
+| `frontend/MathHammer.Web/index.html` | Documento HTML de entrada de Vite | Completado | 2026-08-27 00:27 CEST |
+| `frontend/MathHammer.Web/tsconfig.json` | Referencias de configuración TypeScript | Completado | 2026-08-27 00:27 CEST |
+| `frontend/MathHammer.Web/tsconfig.app.json` | Configuración TypeScript de la aplicación | Completado | 2026-08-27 00:27 CEST |
+| `frontend/MathHammer.Web/tsconfig.node.json` | Configuración TypeScript de Vite | Completado | 2026-08-27 00:27 CEST |
+| `frontend/MathHammer.Web/vite.config.ts` | Configuración de Vite y React | Completado | 2026-08-27 00:27 CEST |
+| `frontend/MathHammer.Web/src/main.tsx` | Punto de entrada React | Completado | 2026-08-27 00:27 CEST |
+| `frontend/MathHammer.Web/src/Aplicacion.tsx` | Composición de la maqueta principal | Completado | 2026-08-27 18:52 CEST |
+| `frontend/MathHammer.Web/src/componentes/ControlesCombate.tsx` | Controles visuales reutilizables | Completado | 2026-08-27 18:45 CEST |
+| `frontend/MathHammer.Web/src/componentes/PanelAtacante.tsx` | Panel estático del atacante | Completado | 2026-08-27 00:27 CEST |
+| `frontend/MathHammer.Web/src/componentes/PanelDefensor.tsx` | Panel estático del defensor | Completado | 2026-08-27 00:27 CEST |
+| `frontend/MathHammer.Web/src/estilos.css` | Estilos visuales grimdark responsive | Completado | 2026-08-27 18:52 CEST |
+| `frontend/MathHammer.Web/src/vite-env.d.ts` | Tipos de entorno de Vite | Completado | 2026-08-27 00:28 CEST |
 | `mobile/MathHammer.App/lib/` | Futura ubicación del código fuente Flutter | Completado | 2026-08-26 23:10 CEST |
 | `mobile/MathHammer.App/test/` | Futura ubicación de pruebas Flutter | Completado | 2026-08-26 23:10 CEST |
 | `mobile/MathHammer.App/android/` | Futura configuración nativa Android | Completado | 2026-08-26 23:10 CEST |
@@ -131,6 +143,15 @@
 | 2026-08-26 23:04 CEST | Explicitación de los nombres `PeticionCombate` y `ResultadoCombate` como DTOs del contrato. | `docs/contrato-api.md`, `CONTEXT.md` | Completado; ambos DTOs quedan identificados de forma directa. |
 | 2026-08-26 23:08 CEST | Creación de las carpetas base de backend, pruebas, web y móvil con `.gitkeep` vacíos. | `src/`, `tests/`, `frontend/`, `mobile/`, `CONTEXT.md` | Completado; no se crearon proyectos ni código. |
 | 2026-08-26 23:18 CEST | Corrección de exclusiones de `.opencode`, ampliación del README y aclaración de repeticiones en el contrato. | `.opencode/.gitignore`, `README.md`, `docs/contrato-api.md`, `CONTEXT.md` | Completado; las dependencias declarativas quedan versionables y el contrato distingue repeticiones generales de `Twin-linked`. |
+| 2026-08-27 00:12 CEST | Ajuste del contrato para el frontend: nombres de unidad, `impactaA`, selector `disparo`/`melee`, cobertura y `Lance` con `+1` a herir. | `docs/contrato-api.md`, `CONTEXT.md` | Completado; contrato alineado con el diseño visual inicial. |
+| 2026-08-27 00:14 CEST | Inicio de la maqueta visual estática web tras revisar estado Git y documentación obligatoria. | `CONTEXT.md` | Se confirmó que solo existían los `.gitkeep` del frontend y que las modificaciones previas del contrato no pertenecían a esta tarea. |
+| 2026-08-27 00:27 CEST | Creación del proyecto Vite y componentes de la maqueta responsive de atacante y defensor. | `frontend/MathHammer.Web/` | Completado sin llamadas HTTP, cálculos ni comportamiento funcional. |
+| 2026-08-27 00:28 CEST | Instalación de dependencias y compilación de producción. | `frontend/MathHammer.Web/package-lock.json` | `npm install` y `npm run build` completados correctamente; 0 vulnerabilidades reportadas. |
+| 2026-08-27 18:28 CEST | Auditoría de la maqueta y desactivación de controles para preservar el carácter estático solicitado. | `frontend/MathHammer.Web/src/Aplicacion.tsx`, `frontend/MathHammer.Web/src/componentes/ControlesCombate.tsx`, `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; sin llamadas HTTP, cálculos ni interacción funcional. |
+| 2026-08-27 18:45 CEST | Simplificación de la cabecera, eliminación del bloque introductorio y activación del estado local controlado del formulario. | `frontend/MathHammer.Web/src/Aplicacion.tsx`, `frontend/MathHammer.Web/src/componentes/ControlesCombate.tsx`, `frontend/MathHammer.Web/src/componentes/PanelAtacante.tsx`, `frontend/MathHammer.Web/src/componentes/PanelDefensor.tsx`, `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; campos, selectores y habilidades son editables localmente, sin API ni cálculos. |
+| 2026-08-27 18:52 CEST | Cambio de tipografías, centrado de `MATH HAMMER`, cierre y reinicio del servidor Vite en `5173`. | `frontend/MathHammer.Web/src/Aplicacion.tsx`, `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; `npm run build` y respuesta HTTP `200` verificados. |
+| 2026-08-27 18:34 CEST | Inicio del servidor de desarrollo Vite en el puerto `5173` y comprobación HTTP. | `CONTEXT.md` | Completado; la aplicación responde con `HTTP 200`. |
+| 2026-08-27 18:40 CEST | Inicio de la actualización visual y funcional solicitada para la pantalla web. | `CONTEXT.md` | En curso; se mantienen fuera de alcance el backend y los cálculos. |
 
 ## Verificaciones realizadas
 
@@ -143,17 +164,19 @@
 - Context7 (remoto): `curl` contra `https://mcp.context7.com/mcp` con el header y la clave → HTTP 200 y `serverInfo` de Context7 v4.0.3 (autenticación válida).
 - Pruebas de la aplicación: No aplican todavía; no se detectó una aplicación implementada.
 - Backlog: 13 historias de usuario registradas en `BACKLOG.md`, todas con estado `Pendiente`.
-- Contrato API: definido en `docs/contrato-api.md`, versión `1.0`, con una petición de un arma y dos histogramas en la respuesta.
+- Contrato API: definido en `docs/contrato-api.md`, versión `1.0`, con una petición de un arma, selector `disparo`/`melee` y dos histogramas en la respuesta.
 - Estructura física: creadas las ramas base `src/`, `tests/`, `frontend/` y `mobile/`; los directorios se conservan en Git mediante `.gitkeep` vacíos.
 - Configuración de OpenCode: `.opencode/.gitignore` conserva únicamente `node_modules/` como exclusión; los manifiestos de dependencias pueden versionarse.
 - Documentación: `README.md` describe el estado actual y los próximos pasos.
+- Frontend web: proyecto Vite compilado correctamente con maqueta responsive y estado local; no incluye servicios, API ni cálculos.
+- Servidor local: Vite responde en `http://localhost:5173` con `HTTP 200`.
 
 ## Traspaso a la siguiente sesión
 
-- **Estado al cerrar:** Mejoras de organización y documentación completadas; cambios por commitear.
-- **Última tarea realizada:** Corrección de configuración, README, contexto y contrato sin crear código de aplicación.
-- **Archivos modificados en esta sesión:** `.opencode/.gitignore`, `README.md`, `docs/contrato-api.md` y `CONTEXT.md`.
-- **Decisiones pendientes:** Crear la solución .NET, el proyecto web y el proyecto Flutter en una tarea posterior.
+- **Estado al cerrar:** Maqueta web interactiva local servida en el puerto `5173` con tipografía actualizada; cambios pendientes de integración.
+- **Última tarea realizada:** Ajuste tipográfico, reinicio del servidor y verificación de compilación.
+- **Archivos modificados en esta sesión:** `CONTEXT.md`, `docs/contrato-api.md` y `frontend/MathHammer.Web/`; se eliminaron sus dos `.gitkeep`.
+- **Decisiones pendientes:** Implementar funcionalidad y conexión al contrato en una tarea posterior, bajo instrucciones de `techlead`.
 - **Bloqueos:** Ninguno conocido.
 - **Siguiente paso recomendado:** Reiniciar opencode y comprobar `/mcps` (Context7) y `/agents` (techlead, backend, frontend).
 

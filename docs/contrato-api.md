@@ -35,7 +35,8 @@ RFC 9457.
 ```json
 {
   "atacante": {
-    "habilidadGolpeo": 3,
+    "nombreUnidad": "Escuadra intercesora",
+    "impactaA": 3,
     "tipoAtaque": "disparo",
     "modificadorGolpe": 0,
     "modificadorHerida": 0,
@@ -51,12 +52,14 @@ RFC 9457.
     "danioAleatorio": null,
     "repetirTiradaHerida": false,
     "habilidades": {
+      "lanza": true,
       "golpesSostenidos": 0,
       "golpesLetales": false,
       "heridasDevastadoras": false
     }
   },
   "defensor": {
+    "nombreUnidad": "Kharn",
     "resistencia": 4,
     "salvacion": 3,
     "salvacionInvulnerable": null,
@@ -78,8 +81,9 @@ RFC 9457.
 
 | Campo | Tipo | Obligatorio | Descripción |
 |---|---|---:|---|
-| `habilidadGolpeo` | entero | Sí | BS o WS aplicable, entre `2` y `6`. |
-| `tipoAtaque` | cadena | Sí | Valores permitidos: `disparo` o `combate`. |
+| `nombreUnidad` | cadena | Sí | Nombre mostrado del atacante. |
+| `impactaA` | entero | Sí | Habilidad de impacto requerida, entre `2` y `6`. |
+| `tipoAtaque` | cadena | Sí | Valores permitidos: `disparo` o `melee`. La cobertura solo se aplica a `disparo`. |
 | `modificadorGolpe` | entero | Sí | Modificador contextual al impacto. |
 | `modificadorHerida` | entero | Sí | Modificador contextual a la herida. |
 | `repeticionGolpe` | cadena | Sí | Valores: `ninguna`, `fallidas` o `unos`. |
@@ -102,6 +106,7 @@ RFC 9457.
 
 | Campo | Tipo | Descripción |
 |---|---|---|
+| `lanza` | booleano | Sí | `Lance`: concede `+1` a la tirada para herir cuando la regla sea aplicable. |
 | `golpesSostenidos` | entero | `Sustained Hits X`. `0` significa que no existe. |
 | `golpesLetales` | booleano | `Lethal Hits`. |
 | `heridasDevastadoras` | booleano | `Devastating Wounds`. |
@@ -110,6 +115,7 @@ RFC 9457.
 
 | Campo | Tipo | Obligatorio | Descripción |
 |---|---|---:|---|
+| `nombreUnidad` | cadena | Sí | Nombre mostrado del defensor. |
 | `resistencia` | entero | Sí | Resistencia de la unidad, entre `1` y `20`. |
 | `salvacion` | entero | Sí | Salvación de armadura, entre `2` y `6`. |
 | `salvacionInvulnerable` | entero o `null` | Sí | Salvación invulnerable entre `2` y `6`, si existe. |
@@ -150,6 +156,8 @@ negativo. `dados` debe ser mayor que `0` y `caras` debe estar entre `2` y `6`.
   campo; el backend debe rechazar una petición que no tenga una fuente válida.
 - `salvacionInvulnerable` y `sensacionDolor` usan `null` para indicar que la
   regla no existe.
+- `tipoAtaque` admite únicamente `disparo` y `melee`. `cobertura` solo tiene
+  efecto cuando el tipo de ataque es `disparo`.
 - `repeticionGolpe` y `repeticionHerida` usan `ninguna` cuando no se aplica una
   repetición, `fallidas` para repetir resultados fallidos y `unos` para repetir
   únicamente resultados naturales de 1.
@@ -260,7 +268,7 @@ transfiere a la siguiente miniatura.
 - Una petición contiene un único perfil de arma.
 - Se admiten ataques y daño fijos o expresados mediante dados.
 - Las habilidades de arma soportadas son `Lethal Hits`, `Sustained Hits X`,
-  `Devastating Wounds` y `Twin-linked`.
+  `Devastating Wounds`, `Twin-linked` y `Lance`.
 - Las repeticiones de impacto y herida admiten `ninguna`, `fallidas` y `unos`.
 - No se incluyen todavía `Anti-X`, `Precision`, `Melta`, `Heavy`, `Torrent` ni
   reglas de unidades con varios perfiles de arma.
