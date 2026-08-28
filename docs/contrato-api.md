@@ -1,6 +1,6 @@
 # Contrato de datos de la API
 
-Versión: `1.0`
+Versión: `1.1`
 
 Este documento define el contrato JSON compartido por el backend y el
 frontend de MathHammer. Los nombres del contrato están en español y usan
@@ -37,11 +37,9 @@ RFC 9457.
   "atacante": {
     "nombreUnidad": "Escuadra intercesora",
     "impactaA": 3,
-    "tipoAtaque": "disparo",
-    "modificadorGolpe": 0,
-    "modificadorHerida": 0,
-    "repeticionGolpe": "ninguna",
-    "repeticionHerida": "ninguna"
+    "repiteParaImpactar": false,
+    "repiteParaHerir": false,
+    "repiteUnoParaHerir": false
   },
   "arma": {
     "cantidadAtaques": 8,
@@ -59,14 +57,15 @@ RFC 9457.
     }
   },
   "defensor": {
-    "nombreUnidad": "Kharn",
+    "nombreUnidad": "Guerreros Necrones",
     "resistencia": 4,
     "salvacion": 3,
     "salvacionInvulnerable": null,
-    "modificadorSalvacion": 0,
-    "cobertura": false,
     "repetirTiradaSalvacion": false,
     "sensacionDolor": null,
+    "reduccionDanio": false,
+    "penalizacionImpactar": false,
+    "penalizacionHerir": false,
     "heridasPorMiniatura": 2,
     "cantidadMiniaturas": 5
   },
@@ -80,14 +79,12 @@ RFC 9457.
 ### `atacante`
 
 | Campo | Tipo | Obligatorio | Descripción |
-|---|---|---:|---|
+|---|---:|---:|---|
 | `nombreUnidad` | cadena | Sí | Nombre mostrado del atacante. |
 | `impactaA` | entero | Sí | Habilidad de impacto requerida, entre `2` y `6`. |
-| `tipoAtaque` | cadena | Sí | Valores permitidos: `disparo` o `melee`. La cobertura solo se aplica a `disparo`. |
-| `modificadorGolpe` | entero | Sí | Modificador contextual al impacto. |
-| `modificadorHerida` | entero | Sí | Modificador contextual a la herida. |
-| `repeticionGolpe` | cadena | Sí | Valores: `ninguna`, `fallidas` o `unos`. |
-| `repeticionHerida` | cadena | Sí | Valores: `ninguna`, `fallidas` o `unos`. |
+| `repiteParaImpactar` | booleano | Sí | Repite todas las tiradas de impacto fallidas (`Full re-roll to hit`). |
+| `repiteParaHerir` | booleano | Sí | Repite todas las tiradas de herida fallidas (`Full re-roll to wound`). |
+| `repiteUnoParaHerir` | booleano | Sí | Repite únicamente los resultados naturales de 1 en la tirada de herida. |
 
 ### `arma`
 
@@ -99,14 +96,14 @@ RFC 9457.
 | `penetracionArmadura` | entero | Sí | AP del arma, normalmente `0` o negativo. |
 | `danio` | entero | Sí | Daño fijo. Se ignora si se usa `danioAleatorio`. |
 | `danioAleatorio` | `Dados` o `null` | Sí | Fuente alternativa para obtener el daño de cada impacto. |
-| `repetirTiradaHerida` | booleano | Sí | Regla `Twin-linked`: repite tiradas de herida fallidas. Es independiente de `atacante.repeticionHerida`. |
+| `repetirTiradaHerida` | booleano | Sí | Regla `Twin-linked`: repite tiradas de herida fallidas. Es independiente de `atacante.repiteParaHerir`. |
 | `habilidades` | `HabilidadesArma` | Sí | Habilidades universales incluidas en la v1. |
 
 `HabilidadesArma` contiene:
 
 | Campo | Tipo | Descripción |
 |---|---|---|
-| `lanza` | booleano | Sí | `Lance`: concede `+1` a la tirada para herir cuando la regla sea aplicable. |
+| `lanza` | booleano | `Lance`: concede `+1` a la tirada para herir cuando la regla sea aplicable. |
 | `golpesSostenidos` | entero | `Sustained Hits X`. `0` significa que no existe. |
 | `golpesLetales` | booleano | `Lethal Hits`. |
 | `heridasDevastadoras` | booleano | `Devastating Wounds`. |
@@ -114,15 +111,16 @@ RFC 9457.
 ### `defensor`
 
 | Campo | Tipo | Obligatorio | Descripción |
-|---|---|---:|---|
+|---|---:|---:|---|
 | `nombreUnidad` | cadena | Sí | Nombre mostrado del defensor. |
 | `resistencia` | entero | Sí | Resistencia de la unidad, entre `1` y `20`. |
 | `salvacion` | entero | Sí | Salvación de armadura, entre `2` y `6`. |
 | `salvacionInvulnerable` | entero o `null` | Sí | Salvación invulnerable entre `2` y `6`, si existe. |
-| `modificadorSalvacion` | entero | Sí | Modificador defensivo aplicable a la armadura. |
-| `cobertura` | booleano | Sí | Añade mejora de `+1` a la armadura contra disparos cuando corresponda. |
 | `repetirTiradaSalvacion` | booleano | Sí | Repite tiradas de salvación fallidas. |
 | `sensacionDolor` | entero o `null` | Sí | FNP entre `2` y `6`, si existe. |
+| `reduccionDanio` | booleano | Sí | Reduce en `1` el daño de cada ataque no salvado, con un mínimo de `1`. |
+| `penalizacionImpactar` | booleano | Sí | Aplica `-1` a la tirada de impacto del atacante. |
+| `penalizacionHerir` | booleano | Sí | Aplica `-1` a la tirada de herida del atacante. |
 | `heridasPorMiniatura` | entero | Sí | Heridas iniciales de cada miniatura, mayor que `0`. |
 | `cantidadMiniaturas` | entero | Sí | Número de miniaturas, mayor que `0`. |
 
@@ -156,15 +154,16 @@ negativo. `dados` debe ser mayor que `0` y `caras` debe estar entre `2` y `6`.
   campo; el backend debe rechazar una petición que no tenga una fuente válida.
 - `salvacionInvulnerable` y `sensacionDolor` usan `null` para indicar que la
   regla no existe.
-- `tipoAtaque` admite únicamente `disparo` y `melee`. `cobertura` solo tiene
-  efecto cuando el tipo de ataque es `disparo`.
-- `repeticionGolpe` y `repeticionHerida` usan `ninguna` cuando no se aplica una
-  repetición, `fallidas` para repetir resultados fallidos y `unos` para repetir
-  únicamente resultados naturales de 1.
+- `repiteParaImpactar` y `repiteParaHerir` indican repetición completa de las
+  tiradas fallidas; `repiteUnoParaHerir` repite únicamente los resultados
+  naturales de 1.
 - Si coinciden varias reglas de repetición sobre el mismo dado, el dado solo se
   repite una vez. El resultado final de esa repetición es el que se procesa.
+- `lanza` suma `+1` a la tirada para herir; `penalizacionImpactar` y
+  `penalizacionHerir` restan `1`. El modificador neto resultante se acota a
+  `[-1, +1]` conforme a la edición.
 - La petición representa una sola arma. No se admite un array de armas en la
-  versión `1.0`.
+  versión `1.1`.
 
 ## DTO `ResultadoCombate`
 
@@ -252,12 +251,17 @@ transfiere a la siguiente miniatura.
 - Un 1 natural siempre falla en impacto, herida y salvación.
 - Un 6 natural es impacto o herida crítica cuando corresponde.
 - Las repeticiones se resuelven antes de consolidar los impactos críticos. Las
-  repeticiones generales del atacante y `Twin-linked` se consideran reglas
-  independientes, pero ningún dado puede repetirse más de una vez.
+  repeticiones del atacante (`repiteParaImpactar`, `repiteParaHerir`,
+  `repiteUnoParaHerir`) y `Twin-linked` se consideran reglas independientes,
+  pero ningún dado puede repetirse más de una vez.
 - `Lethal Hits` convierte los 6 naturales finales en heridas automáticas.
 - `Sustained Hits X` genera `X` impactos adicionales no críticos por cada 6
   natural final.
+- `Lance` suma `+1` a la tirada para herir; `penalizacionHerir` resta `1`. El
+  neto se aplica antes de calcular la tirada requerida.
 - `Devastating Wounds` evita la salvación cuando se obtiene una herida crítica.
+- `reduccionDanio` reduce en `1` el daño de cada ataque no salvado, con un
+  mínimo de `1` punto de daño.
 - La salvación invulnerable no se modifica por AP.
 - FNP se resuelve individualmente por cada punto de daño.
 - El daño se asigna primero a miniaturas previamente heridas y no existe
@@ -269,6 +273,11 @@ transfiere a la siguiente miniatura.
 - Se admiten ataques y daño fijos o expresados mediante dados.
 - Las habilidades de arma soportadas son `Lethal Hits`, `Sustained Hits X`,
   `Devastating Wounds`, `Twin-linked` y `Lance`.
-- Las repeticiones de impacto y herida admiten `ninguna`, `fallidas` y `unos`.
+- Las repeticiones del atacante son `repiteParaImpactar`, `repiteParaHerir` y
+  `repiteUnoParaHerir`; todas booleanas.
+- Las habilidades defensivas soportadas son `reduccionDanio`,
+  `penalizacionImpactar` y `penalizacionHerir`.
+- No existe tipo de ataque ni cobertura: el simulador no diferencia entre
+  disparo y combate en esta versión.
 - No se incluyen todavía `Anti-X`, `Precision`, `Melta`, `Heavy`, `Torrent` ni
   reglas de unidades con varios perfiles de arma.

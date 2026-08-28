@@ -36,11 +36,11 @@
 ## Estado actual
 
 - **Estado:** Completado
-- **Última actualización:** 2026-08-27 18:52 CEST
-- **Tarea:** Ajustar la tipografía y composición visual de la maqueta web interactiva.
-- **Objetivo inmediato:** Mostrar `MATH HAMMER` centrado con tipografía antigua y usar una tipografía técnica para el formulario, manteniendo el estado local sin backend ni cálculos.
+- **Última actualización:** 2026-08-28 11:20 CEST
+- **Tarea:** Sustituir el efecto de humo por un fondo táctico HUD adaptado a la estética.
+- **Objetivo inmediato:** Viñeta oscura, marcos de esquinas y barrido de escaneo auspex con el color del tema.
 - **Bloqueos:** Ninguno conocido.
-- **Próxima acción:** Revisar visualmente la nueva tipografía y continuar con la integración cuando exista el backend.
+- **Próxima acción:** Revisar visualmente el nuevo efecto en el servidor Vite.
 
 ## Contexto del proyecto
 
@@ -75,7 +75,7 @@
 | `README.md` | Presentación inicial y estado del proyecto | Completado | 2026-08-26 23:18 CEST |
 | `LICENSE` | Licencia MIT del proyecto | Existente | 2026-08-26 22:04 CEST |
 | `BACKLOG.md` | Historias de usuario del proyecto | Completado | 2026-08-26 22:50 CEST |
-| `docs/contrato-api.md` | Contrato JSON de entrada y salida de la API de combate | Completado | 2026-08-27 00:12 CEST |
+| `docs/contrato-api.md` | Contrato JSON de entrada y salida de la API de combate | Completado | 2026-08-28 10:00 CEST |
 | `.opencode/.gitignore` | Exclusiones de dependencias locales de OpenCode | Completado | 2026-08-26 23:18 CEST |
 | `.opencode/package.json` | Dependencia local del plugin de OpenCode | Completado | 2026-08-26 23:18 CEST |
 | `.opencode/package-lock.json` | Versiones bloqueadas de dependencias de OpenCode | Completado | 2026-08-26 23:18 CEST |
@@ -92,11 +92,13 @@
 | `frontend/MathHammer.Web/tsconfig.node.json` | Configuración TypeScript de Vite | Completado | 2026-08-27 00:27 CEST |
 | `frontend/MathHammer.Web/vite.config.ts` | Configuración de Vite y React | Completado | 2026-08-27 00:27 CEST |
 | `frontend/MathHammer.Web/src/main.tsx` | Punto de entrada React | Completado | 2026-08-27 00:27 CEST |
-| `frontend/MathHammer.Web/src/Aplicacion.tsx` | Composición de la maqueta principal | Completado | 2026-08-27 18:52 CEST |
+| `frontend/MathHammer.Web/src/Aplicacion.tsx` | Composición de la maqueta principal | Completado | 2026-08-28 11:20 CEST |
 | `frontend/MathHammer.Web/src/componentes/ControlesCombate.tsx` | Controles visuales reutilizables | Completado | 2026-08-27 18:45 CEST |
-| `frontend/MathHammer.Web/src/componentes/PanelAtacante.tsx` | Panel estático del atacante | Completado | 2026-08-27 00:27 CEST |
-| `frontend/MathHammer.Web/src/componentes/PanelDefensor.tsx` | Panel estático del defensor | Completado | 2026-08-27 00:27 CEST |
-| `frontend/MathHammer.Web/src/estilos.css` | Estilos visuales grimdark responsive | Completado | 2026-08-27 18:52 CEST |
+| `frontend/MathHammer.Web/src/componentes/PanelAtacante.tsx` | Panel interactivo del atacante | Completado | 2026-08-28 09:50 CEST |
+| `frontend/MathHammer.Web/src/componentes/PanelDefensor.tsx` | Panel interactivo del defensor | Completado | 2026-08-28 09:50 CEST |
+| `frontend/MathHammer.Web/src/componentes/PanelResultados.tsx` | Tarjetas de métricas de resultados | Completado | 2026-08-28 10:25 CEST |
+| `frontend/MathHammer.Web/src/componentes/SelectorTema.tsx` | Selector de temas de color dinámicos | Completado | 2026-08-28 10:50 CEST |
+| `frontend/MathHammer.Web/src/estilos.css` | Estilos visuales grimdark responsive | Completado | 2026-08-28 11:20 CEST |
 | `frontend/MathHammer.Web/src/vite-env.d.ts` | Tipos de entorno de Vite | Completado | 2026-08-27 00:28 CEST |
 | `mobile/MathHammer.App/lib/` | Futura ubicación del código fuente Flutter | Completado | 2026-08-26 23:10 CEST |
 | `mobile/MathHammer.App/test/` | Futura ubicación de pruebas Flutter | Completado | 2026-08-26 23:10 CEST |
@@ -150,6 +152,15 @@
 | 2026-08-27 18:28 CEST | Auditoría de la maqueta y desactivación de controles para preservar el carácter estático solicitado. | `frontend/MathHammer.Web/src/Aplicacion.tsx`, `frontend/MathHammer.Web/src/componentes/ControlesCombate.tsx`, `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; sin llamadas HTTP, cálculos ni interacción funcional. |
 | 2026-08-27 18:45 CEST | Simplificación de la cabecera, eliminación del bloque introductorio y activación del estado local controlado del formulario. | `frontend/MathHammer.Web/src/Aplicacion.tsx`, `frontend/MathHammer.Web/src/componentes/ControlesCombate.tsx`, `frontend/MathHammer.Web/src/componentes/PanelAtacante.tsx`, `frontend/MathHammer.Web/src/componentes/PanelDefensor.tsx`, `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; campos, selectores y habilidades son editables localmente, sin API ni cálculos. |
 | 2026-08-27 18:52 CEST | Cambio de tipografías, centrado de `MATH HAMMER`, cierre y reinicio del servidor Vite en `5173`. | `frontend/MathHammer.Web/src/Aplicacion.tsx`, `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; `npm run build` y respuesta HTTP `200` verificados. |
+| 2026-08-28 09:20 CEST | Sustitución de `Cinzel Decorative` por `Caslon Antique` en el título y mantenimiento de `Rajdhani` para la interfaz. | `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; `npm run build` y respuesta HTTP `200` verificados. |
+| 2026-08-28 09:50 CEST | Rediseño completo del frontend: `Friz Quadrata`, `MathHammer` en una palabra, bordes rojos superiores/inferiores, cabeceras blancas, habilidades ampliadas, acentos degradados, pie de formulario y panel de resultados. | `frontend/MathHammer.Web/src/Aplicacion.tsx`, `frontend/MathHammer.Web/src/componentes/PanelAtacante.tsx`, `frontend/MathHammer.Web/src/componentes/PanelDefensor.tsx`, `frontend/MathHammer.Web/src/componentes/PanelResultados.tsx`, `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; `npm run build` correcto y servidor Vite operativo en `5173`. |
+| 2026-08-28 10:00 CEST | Actualización del contrato a `1.1`: eliminados `tipoAtaque`, `cobertura` y modificadores genéricos; añadidas repeticiones y defensas booleanas alineadas con la interfaz. | `docs/contrato-api.md`, `CONTEXT.md` | Completado; contrato sincronizado con el frontend. |
+| 2026-08-28 10:25 CEST | Sistema de temas dinámicos con variables CSS, selector desplegable, fuente `Caslon Antique Bold` y homogeneización de resultados y legibilidad. | `frontend/MathHammer.Web/src/Aplicacion.tsx`, `frontend/MathHammer.Web/src/componentes/SelectorTema.tsx` (nuevo), `frontend/MathHammer.Web/src/componentes/PanelResultados.tsx`, `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; `npm run build` correcto y servidor Vite operativo en `5173`. |
+| 2026-08-28 10:35 CEST | Título `MathHammer` con `Cinzel` (pesos 600-800), `Math` gris `#a1a1aa` y `Hammer` rojo `#c3272b`; interfaz con `Inter`; fondo `#030712` con degradado rojo. | `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; `npm run build` correcto. |
+| 2026-08-28 10:50 CEST | Corrección de z-index del selector de temas, nomenclatura Citadel (Mephiston Red, Averland Sunset, Macragge Blue, Waaagh! Flesh, Abaddon Black), jerarquía tipográfica, estados activos y fondo ambiental con niebla animada. | `frontend/MathHammer.Web/src/componentes/SelectorTema.tsx`, `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; `npm run build` correcto. |
+| 2026-08-28 11:05 CEST | Variables de tema movidas a `body` con sincronización vía `useEffect`; el humo de fondo y el título cambian de color según el tema, y la niebla inicia centrada detrás de `MathHammer`. | `frontend/MathHammer.Web/src/Aplicacion.tsx`, `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; `npm run build` correcto. |
+| 2026-08-28 11:20 CEST | Reemplazo del humo por efecto táctico HUD: viñeta oscura, marcos de esquinas con el color del tema y barrido de escaneo auspex animado. | `frontend/MathHammer.Web/src/Aplicacion.tsx`, `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; `npm run build` correcto. |
+| 2026-08-28 09:00 CEST | Inicio de correcciones visuales y del selector condicional de `Sustained Hits`. | `CONTEXT.md` | En curso; se mantiene el alcance exclusivamente web y local. |
 | 2026-08-27 18:34 CEST | Inicio del servidor de desarrollo Vite en el puerto `5173` y comprobación HTTP. | `CONTEXT.md` | Completado; la aplicación responde con `HTTP 200`. |
 | 2026-08-27 18:40 CEST | Inicio de la actualización visual y funcional solicitada para la pantalla web. | `CONTEXT.md` | En curso; se mantienen fuera de alcance el backend y los cálculos. |
 
@@ -169,16 +180,19 @@
 - Configuración de OpenCode: `.opencode/.gitignore` conserva únicamente `node_modules/` como exclusión; los manifiestos de dependencias pueden versionarse.
 - Documentación: `README.md` describe el estado actual y los próximos pasos.
 - Frontend web: proyecto Vite compilado correctamente con maqueta responsive y estado local; no incluye servicios, API ni cálculos.
+- Tipografía del título: `Cinzel` con `Math` gris `#a1a1aa` y `Hammer` rojo `#c3272b`; interfaz con `Inter`.
+- Temas: rojo código, amarillo imperial, azul ultramar y verde tóxico, aplicados mediante variables CSS.
+- Resultados: panel de tarjetas con encabezado `RESULTADOS DE COMBATE` y legibilidad en blanco.
 - Servidor local: Vite responde en `http://localhost:5173` con `HTTP 200`.
 
 ## Traspaso a la siguiente sesión
 
-- **Estado al cerrar:** Maqueta web interactiva local servida en el puerto `5173` con tipografía actualizada; cambios pendientes de integración.
-- **Última tarea realizada:** Ajuste tipográfico, reinicio del servidor y verificación de compilación.
-- **Archivos modificados en esta sesión:** `CONTEXT.md`, `docs/contrato-api.md` y `frontend/MathHammer.Web/`; se eliminaron sus dos `.gitkeep`.
-- **Decisiones pendientes:** Implementar funcionalidad y conexión al contrato en una tarea posterior, bajo instrucciones de `techlead`.
+- **Estado al cerrar:** Título con `Cinzel` e interfaz con `Inter` aplicados y servidos en el puerto `5173`; cambios sin commit.
+- **Última tarea realizada:** Estilo `Cinzel`/`Inter` y fondo carbón con degradado rojo.
+- **Archivos modificados en esta sesión:** `CONTEXT.md` y `frontend/MathHammer.Web/src/estilos.css`.
+- **Decisiones pendientes:** Conectar los resultados al backend cuando exista; añadir el valor numérico de FNP cuando el selector esté disponible en el frontend.
 - **Bloqueos:** Ninguno conocido.
-- **Siguiente paso recomendado:** Reiniciar opencode y comprobar `/mcps` (Context7) y `/agents` (techlead, backend, frontend).
+- **Siguiente paso recomendado:** Revisar visualmente los cuatro temas y preparar la implementación del backend conforme al contrato `1.1`.
 
 ## Historial resumido
 

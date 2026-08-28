@@ -19,7 +19,7 @@ interface PropiedadesPanelDefensor {
 export function PanelDefensor({ perfil, alCambiarCampo, alCambiarHabilidad }: PropiedadesPanelDefensor) {
   return (
     <article className="panel panel--defensor">
-      <header className="panel__cabecera"><div><span className="panel__numero">02 //</span><h3>DEFENSOR</h3></div><span className="panel__codigo">TARGET-SPEC</span></header>
+      <header className="panel__cabecera"><h3>DEFENSOR</h3></header>
       <div className="rejilla-campos">
         <CampoCombate etiqueta="Nombre de unidad" nombre="nombreDefensor" tipo="texto" valor={perfil.nombreUnidad} alCambiar={(valor) => alCambiarCampo('nombreUnidad', valor)} />
         <CampoCombate etiqueta="Resistencia" nombre="resistencia" valor={perfil.resistencia} alCambiar={(valor) => alCambiarCampo('resistencia', valor)} />
@@ -28,13 +28,12 @@ export function PanelDefensor({ perfil, alCambiarCampo, alCambiarHabilidad }: Pr
         <CampoCombate etiqueta="Salvación" nombre="salvacion" tipo="texto" valor={perfil.salvacion} alCambiar={(valor) => alCambiarCampo('salvacion', valor)} />
         <CampoCombate etiqueta="Salvación invulnerable" nombre="salvacionInvulnerable" tipo="texto" valor={perfil.salvacionInvulnerable} alCambiar={(valor) => alCambiarCampo('salvacionInvulnerable', valor)} />
       </div>
-      <div className="separador" />
-      <div className="subcabecera"><span>PROTOCOLOS DEFENSIVOS</span><span className="subcabecera__linea" /></div>
+      <div className="subcabecera"><span>HABILIDADES DEFENSIVAS</span></div>
       <div className="habilidades habilidades--defensa">
-        <HabilidadCombate texto="COBERTURA" activa={perfil.habilidades.cobertura} alCambiar={(activa) => alCambiarHabilidad('cobertura', activa)} />
         <HabilidadCombate texto="-1 AL DAÑO" activa={perfil.habilidades.reduccionDanio} alCambiar={(activa) => alCambiarHabilidad('reduccionDanio', activa)} />
         <HabilidadCombate texto="FEEL NO PAIN" activa={perfil.habilidades.sinDolor} alCambiar={(activa) => alCambiarHabilidad('sinDolor', activa)} />
         <HabilidadCombate texto="-1 AL IMPACTAR" activa={perfil.habilidades.penalizacionImpactar} alCambiar={(activa) => alCambiarHabilidad('penalizacionImpactar', activa)} />
+        <HabilidadCombate texto="-1 AL HERIR" activa={perfil.habilidades.penalizacionHerir} alCambiar={(activa) => alCambiarHabilidad('penalizacionHerir', activa)} />
       </div>
     </article>
   )

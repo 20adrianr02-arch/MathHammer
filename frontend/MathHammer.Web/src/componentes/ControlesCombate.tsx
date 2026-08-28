@@ -53,7 +53,7 @@ export function HabilidadCombate({ texto, activa, alCambiar, selector = false, v
       <input type="checkbox" checked={activa} onChange={(evento) => alCambiar(evento.target.checked)} />
       <span className="habilidad__marca" />
       <span>{texto}</span>
-      {selector && valorSelector && alCambiarSelector && <select aria-label="Cantidad de golpes sostenidos" value={valorSelector} onChange={(evento) => alCambiarSelector(evento.target.value)}><option>1</option><option>2</option><option>3</option></select>}
+      {selector && activa && valorSelector && alCambiarSelector && <select aria-label="Cantidad de golpes sostenidos" value={valorSelector} onChange={(evento) => alCambiarSelector(evento.target.value)}><option>1</option><option>2</option><option>3</option></select>}
     </label>
   )
 }
