@@ -33,7 +33,7 @@ export function PanelAtacante({ perfil, alCambiarCampo, alCambiarHabilidad }: Pr
       <div className="habilidades">
         <HabilidadCombate texto="LETHAL HITS" activa={perfil.habilidades.impactosLetales} alCambiar={(activa) => alCambiarHabilidad('impactosLetales', activa)} />
         <HabilidadCombate texto="REPITE PARA IMPACTAR" activa={perfil.habilidades.repiteParaImpactar} alCambiar={(activa) => alCambiarHabilidad('repiteParaImpactar', activa)} />
-        <HabilidadCombate texto="REPETIR PARA HERIR" activa={perfil.habilidades.repiteParaHerir} alCambiar={(activa) => alCambiarHabilidad('repiteParaHerir', activa)} />
+        <HabilidadCombate texto="TWIN-LINKED" activa={perfil.habilidades.repetirTiradaHerida} alCambiar={(activa) => alCambiarHabilidad('repetirTiradaHerida', activa)} />
         <HabilidadCombate texto="REPETIR 1 PARA HERIR" activa={perfil.habilidades.repiteUnoParaHerir} alCambiar={(activa) => alCambiarHabilidad('repiteUnoParaHerir', activa)} />
         <HabilidadCombate texto="LANCE (+1 AL HERIR)" activa={perfil.habilidades.lance} alCambiar={(activa) => alCambiarHabilidad('lance', activa)} />
         <HabilidadCombate texto="DEVASTATING WOUNDS" activa={perfil.habilidades.heridasDevastadoras} alCambiar={(activa) => alCambiarHabilidad('heridasDevastadoras', activa)} />

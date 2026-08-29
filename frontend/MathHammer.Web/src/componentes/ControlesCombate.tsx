@@ -47,15 +47,30 @@ interface PropiedadesHabilidad {
   selector?: boolean
   valorSelector?: string
   alCambiarSelector?: (valor: string) => void
+  opcionesSelector?: string[]
+  etiquetaSelector?: string
 }
 
-export function HabilidadCombate({ texto, activa, alCambiar, selector = false, valorSelector, alCambiarSelector }: PropiedadesHabilidad) {
+export function HabilidadCombate({
+  texto,
+  activa,
+  alCambiar,
+  selector = false,
+  valorSelector,
+  alCambiarSelector,
+  opcionesSelector = ['1', '2', '3'],
+  etiquetaSelector = 'Cantidad de golpes sostenidos',
+}: PropiedadesHabilidad) {
   return (
     <label className={`habilidad ${activa ? 'habilidad--activa' : ''}`}>
       <input type="checkbox" checked={activa} onChange={(evento) => alCambiar(evento.target.checked)} />
       <span className="habilidad__marca" />
       <span>{texto}</span>
-      {selector && activa && valorSelector && alCambiarSelector && <select aria-label="Cantidad de golpes sostenidos" value={valorSelector} onChange={(evento) => alCambiarSelector(evento.target.value)}><option>1</option><option>2</option><option>3</option></select>}
+      {selector && activa && valorSelector && alCambiarSelector && (
+        <select aria-label={etiquetaSelector} value={valorSelector} onChange={(evento) => alCambiarSelector(evento.target.value)}>
+          {opcionesSelector.map((opcion) => <option key={opcion} value={opcion}>{opcion}</option>)}
+        </select>
+      )}
     </label>
   )
 }

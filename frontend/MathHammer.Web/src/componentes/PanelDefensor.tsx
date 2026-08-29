@@ -7,6 +7,7 @@ export interface PerfilDefensor {
   cantidadMiniaturas: string
   salvacion: string
   salvacionInvulnerable: string
+  sensacionDolor: string
   habilidades: Record<string, boolean>
 }
 
@@ -31,7 +32,7 @@ export function PanelDefensor({ perfil, alCambiarCampo, alCambiarHabilidad }: Pr
       <div className="subcabecera"><span>HABILIDADES DEFENSIVAS</span></div>
       <div className="habilidades habilidades--defensa">
         <HabilidadCombate texto="-1 AL DAÑO" activa={perfil.habilidades.reduccionDanio} alCambiar={(activa) => alCambiarHabilidad('reduccionDanio', activa)} />
-        <HabilidadCombate texto="FEEL NO PAIN" activa={perfil.habilidades.sinDolor} alCambiar={(activa) => alCambiarHabilidad('sinDolor', activa)} />
+        <HabilidadCombate texto="FEEL NO PAIN" activa={perfil.habilidades.sinDolor} alCambiar={(activa) => alCambiarHabilidad('sinDolor', activa)} selector valorSelector={perfil.sensacionDolor} alCambiarSelector={(valor) => alCambiarCampo('sensacionDolor', valor)} opcionesSelector={['3+', '4+', '5+', '6+']} etiquetaSelector="Valor de la sensación de dolor" />
         <HabilidadCombate texto="-1 AL IMPACTAR" activa={perfil.habilidades.penalizacionImpactar} alCambiar={(activa) => alCambiarHabilidad('penalizacionImpactar', activa)} />
         <HabilidadCombate texto="-1 AL HERIR" activa={perfil.habilidades.penalizacionHerir} alCambiar={(activa) => alCambiarHabilidad('penalizacionHerir', activa)} />
       </div>

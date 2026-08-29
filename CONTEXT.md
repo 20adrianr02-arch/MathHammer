@@ -36,11 +36,11 @@
 ## Estado actual
 
 - **Estado:** Completado
-- **Última actualización:** 2026-08-28 12:00 CEST
-- **Tarea:** Módulo 0 (scaffolding .NET) y Módulo 1 (probabilidad base) del backend.
-- **Objetivo inmediato:** Solución .NET 9 compilando, con probabilidad 1D6 y distribución binomial probadas.
+- **Última actualización:** 2026-08-29 17:30 CEST
+- **Tarea:** Módulo 6: aplicar las habilidades ofensivas y defensivas; contrato v1.3.
+- **Objetivo inmediato:** Simulador completo con habilidades, métricas por simulación, FNP con desplegable en el front y contrato actualizado.
 - **Bloqueos:** Ninguno conocido.
-- **Próxima acción:** Módulo 2: reglas de secuencia base (tabla de herida y salvación).
+- **Próxima acción:** Conectar el frontend al endpoint y revisar el flujo completo.
 
 ## Contexto del proyecto
 
@@ -75,7 +75,7 @@
 | `README.md` | Presentación inicial y estado del proyecto | Completado | 2026-08-26 23:18 CEST |
 | `LICENSE` | Licencia MIT del proyecto | Existente | 2026-08-26 22:04 CEST |
 | `BACKLOG.md` | Historias de usuario del proyecto | Completado | 2026-08-26 22:50 CEST |
-| `docs/contrato-api.md` | Contrato JSON de entrada y salida de la API de combate | Completado | 2026-08-28 10:00 CEST |
+| `docs/contrato-api.md` | Contrato JSON de entrada y salida de la API de combate | Completado | 2026-08-29 17:30 CEST |
 | `.opencode/.gitignore` | Exclusiones de dependencias locales de OpenCode | Completado | 2026-08-26 23:18 CEST |
 | `.opencode/package.json` | Dependencia local del plugin de OpenCode | Completado | 2026-08-26 23:18 CEST |
 | `.opencode/package-lock.json` | Versiones bloqueadas de dependencias de OpenCode | Completado | 2026-08-26 23:18 CEST |
@@ -90,9 +90,35 @@
 | `src/MathHammer.Api/Program.cs` | Punto de entrada minimal API | Completado | 2026-08-28 12:00 CEST |
 | `src/MathHammer.Api/Reglas/CalculadoraProbabilidades.cs` | Probabilidad de éxito/falmente en 1D6 | Completado | 2026-08-28 12:00 CEST |
 | `src/MathHammer.Api/Reglas/DistribucionBinomial.cs` | Éxitos esperados, exacta y acumulada binomial | Completado | 2026-08-28 12:00 CEST |
+| `src/MathHammer.Api/Reglas/ReglaHerida.cs` | Tabla de herida Fuerza vs Resistencia (2+..6+) | Completado | 2026-08-29 14:20 CEST |
+| `src/MathHammer.Api/Reglas/ReglaSalvacion.cs` | Salvación armadura/invulnerable acotada (2+..7+) | Completado | 2026-08-29 14:20 CEST |
+| `src/MathHammer.Api/Contratos/PeticionCombate.cs` | DTO petición de combate | Completado | 2026-08-29 16:00 CEST |
+| `src/MathHammer.Api/Contratos/PerfilAtacante.cs` | DTO atacante | Completado | 2026-08-29 16:00 CEST |
+| `src/MathHammer.Api/Contratos/PerfilArma.cs` | DTO arma | Completado | 2026-08-29 16:00 CEST |
+| `src/MathHammer.Api/Contratos/HabilidadesArma.cs` | DTO habilidades del arma | Completado | 2026-08-29 16:00 CEST |
+| `src/MathHammer.Api/Contratos/PerfilDefensor.cs` | DTO defensor | Completado | 2026-08-29 16:00 CEST |
+| `src/MathHammer.Api/Contratos/ConfiguracionSimulacion.cs` | DTO configuración de simulación | Completado | 2026-08-29 16:00 CEST |
+| `src/MathHammer.Api/Contratos/ResultadoCombate.cs` | DTO respuesta de combate | Completado | 2026-08-29 16:00 CEST |
+| `src/MathHammer.Api/Contratos/ResumenSimulacion.cs` | DTO resumen de la simulación | Completado | 2026-08-29 16:00 CEST |
+| `src/MathHammer.Api/Contratos/ValidadorPeticion.cs` | Validación fail-fast de la petición | Completado | 2026-08-29 16:00 CEST |
+| `src/MathHammer.Api/Contratos/MapeadorPeticion.cs` | Mapeo petición → perfil base | Completado | 2026-08-29 16:00 CEST |
+| `src/MathHammer.Api/Simulacion/GeneradorAleatorio.cs` | Generador aleatorio con semilla reproducible | Completado | 2026-08-29 14:45 CEST |
+| `src/MathHammer.Api/Simulacion/PerfilCombateBase.cs` | Perfil de combate base (sin habilidades) | Eliminado | 2026-08-29 17:30 CEST |
+| `src/MathHammer.Api/Simulacion/PerfilCombate.cs` | Perfil completo con habilidades | Completado | 2026-08-29 17:30 CEST |
+| `src/MathHammer.Api/Simulacion/ResultadoIteracion.cs` | Heridas infligidas y miniaturas destruidas por iteración | Completado | 2026-08-29 14:45 CEST |
+| `src/MathHammer.Api/Simulacion/SimuladorCombate.cs` | Simulador Monte Carlo de la secuencia base | Completado | 2026-08-29 14:45 CEST |
+| `src/MathHammer.Api/Simulacion/ResultadoMetricas.cs` | Las 8 métricas del panel de resultados | Completado | 2026-08-29 15:10 CEST |
+| `src/MathHammer.Api/Simulacion/CalculadoraMetricas.cs` | Medios analíticos, letalidad y percentiles | Completado | 2026-08-29 15:10 CEST |
 | `tests/MathHammer.Pruebas/MathHammer.Pruebas.csproj` | Proyecto xUnit + FluentAssertions | Completado | 2026-08-28 12:00 CEST |
 | `tests/MathHammer.Pruebas/Reglas/CalculadoraProbabilidadesPruebas.cs` | Pruebas de probabilidad en 1D6 | Completado | 2026-08-28 12:00 CEST |
 | `tests/MathHammer.Pruebas/Reglas/DistribucionBinomialPruebas.cs` | Pruebas de distribución binomial | Completado | 2026-08-28 12:00 CEST |
+| `tests/MathHammer.Pruebas/Reglas/ReglaHeridaPruebas.cs` | Pruebas de la tabla de herida | Completado | 2026-08-29 14:20 CEST |
+| `tests/MathHammer.Pruebas/Reglas/ReglaSalvacionPruebas.cs` | Pruebas de la salvación | Completado | 2026-08-29 14:20 CEST |
+| `tests/MathHammer.Pruebas/Simulacion/GeneradorAleatorioPruebas.cs` | Pruebas de semilla y rango del dado | Completado | 2026-08-29 14:45 CEST |
+| `tests/MathHammer.Pruebas/Simulacion/SimuladorCombatePruebas.cs` | Pruebas de convergencia, no-spillover y reproducibilidad | Completado | 2026-08-29 14:45 CEST |
+| `tests/MathHammer.Pruebas/Simulacion/CalculadoraMetricasPruebas.cs` | Pruebas de las métricas del panel | Completado | 2026-08-29 15:10 CEST |
+| `tests/MathHammer.Pruebas/Contratos/MapeadorPeticionPruebas.cs` | Pruebas del mapeo petición → perfil | Completado | 2026-08-29 16:00 CEST |
+| `tests/MathHammer.Pruebas/Contratos/ValidadorPeticionPruebas.cs` | Pruebas de validación de la petición | Completado | 2026-08-29 16:00 CEST |
 | `frontend/MathHammer.Web/package.json` | Dependencias y scripts del proyecto web | Completado | 2026-08-27 00:28 CEST |
 | `frontend/MathHammer.Web/package-lock.json` | Bloqueo de dependencias del proyecto web | Completado | 2026-08-27 00:28 CEST |
 | `frontend/MathHammer.Web/index.html` | Documento HTML de entrada de Vite | Completado | 2026-08-27 00:27 CEST |
@@ -175,6 +201,11 @@
 | 2026-08-27 18:34 CEST | Inicio del servidor de desarrollo Vite en el puerto `5173` y comprobación HTTP. | `CONTEXT.md` | Completado; la aplicación responde con `HTTP 200`. |
 | 2026-08-27 18:40 CEST | Inicio de la actualización visual y funcional solicitada para la pantalla web. | `CONTEXT.md` | En curso; se mantienen fuera de alcance el backend y los cálculos. |
 | 2026-08-28 12:00 CEST | Módulo 0: `global.json` (SDK 9.0.203), `MathHammer.sln`, proyecto API minimal y proyecto xUnit con FluentAssertions. Módulo 1: `CalculadoraProbabilidades` y `DistribucionBinomial` con sus pruebas. | `global.json`, `MathHammer.sln`, `src/MathHammer.Api/*`, `tests/MathHammer.Pruebas/*`, `CONTEXT.md` | Completado; `dotnet build` sin errores y 19 pruebas en verde. |
+| 2026-08-29 14:20 CEST | Módulo 2: `ReglaHerida` (tabla S vs T) y `ReglaSalvacion` (Sv/AP/invulnerable acotada a 2+..7+) con sus pruebas. | `src/MathHammer.Api/Reglas/ReglaHerida.cs`, `src/MathHammer.Api/Reglas/ReglaSalvacion.cs`, `tests/MathHammer.Pruebas/Reglas/ReglaHeridaPruebas.cs`, `tests/MathHammer.Pruebas/Reglas/ReglaSalvacionPruebas.cs`, `CONTEXT.md` | Completado; `dotnet build` sin errores y 46 pruebas en verde. |
+| 2026-08-29 14:45 CEST | Módulo 3: `GeneradorAleatorio`, `PerfilCombateBase`, `ResultadoIteracion` y `SimuladorCombate` (secuencia base sin spillover) con pruebas de convergencia y reproducibilidad. | `src/MathHammer.Api/Simulacion/*`, `tests/MathHammer.Pruebas/Simulacion/*`, `CONTEXT.md` | Completado; `dotnet build` sin errores y 55 pruebas en verde. |
+| 2026-08-29 15:10 CEST | Módulo 4: `ResultadoMetricas` y `CalculadoraMetricas` con las 8 métricas del panel (sin histogramas), usando medios analíticos + simulación. | `src/MathHammer.Api/Simulacion/ResultadoMetricas.cs`, `src/MathHammer.Api/Simulacion/CalculadoraMetricas.cs`, `tests/MathHammer.Pruebas/Simulacion/CalculadoraMetricasPruebas.cs`, `CONTEXT.md` | Completado; `dotnet build` sin errores y 62 pruebas en verde. |
+| 2026-08-29 16:00 CEST | Módulo 5: DTOs de petición/respuesta, `ValidadorPeticion`, `MapeadorPeticion`, endpoint `POST /api/combate/simular` con camelCase, CORS y Problem Details; contrato actualizado a v1.2 (8 métricas, sin histogramas). | `src/MathHammer.Api/Contratos/*`, `src/MathHammer.Api/Program.cs`, `tests/MathHammer.Pruebas/Contratos/*`, `docs/contrato-api.md`, `CONTEXT.md` | Completado; 70 pruebas en verde y verificación manual con `curl`/PowerShell (200 y 422 correctos). |
+| 2026-08-29 17:30 CEST | Módulo 6: habilidades ofensivas y defensivas en el simulador, `PerfilCombate`, métricas por medias de simulación, eliminación de `repiteParaHerir` y `repetirTiradaSalvacion`, FNP con desplegable en el front y contrato v1.3. | `src/MathHammer.Api/Simulacion/*`, `src/MathHammer.Api/Contratos/*`, `src/MathHammer.Api/Program.cs`, `tests/MathHammer.Pruebas/*`, `frontend/MathHammer.Web/src/*`, `docs/contrato-api.md`, `CONTEXT.md` | Completado; 78 pruebas en verde y `npm run build` correcto. |
 
 ## Verificaciones realizadas
 
@@ -187,7 +218,7 @@
 - Context7 (remoto): `curl` contra `https://mcp.context7.com/mcp` con el header y la clave → HTTP 200 y `serverInfo` de Context7 v4.0.3 (autenticación válida).
 - Pruebas de la aplicación: No aplican todavía; no se detectó una aplicación implementada.
 - Backlog: 13 historias de usuario registradas en `BACKLOG.md`, todas con estado `Pendiente`.
-- Contrato API: definido en `docs/contrato-api.md`, versión `1.0`, con una petición de un arma, selector `disparo`/`melee` y dos histogramas en la respuesta.
+- Contrato API: definido en `docs/contrato-api.md`, versión `1.2`, con una petición de un arma, 8 métricas de respuesta y sin histogramas.
 - Estructura física: creadas las ramas base `src/`, `tests/`, `frontend/` y `mobile/`; los directorios se conservan en Git mediante `.gitkeep` vacíos.
 - Configuración de OpenCode: `.opencode/.gitignore` conserva únicamente `node_modules/` como exclusión; los manifiestos de dependencias pueden versionarse.
 - Documentación: `README.md` describe el estado actual y los próximos pasos.
@@ -196,7 +227,8 @@
 - Temas: rojo código, amarillo imperial, azul ultramar y verde tóxico, aplicados mediante variables CSS.
 - Resultados: panel de tarjetas con encabezado `RESULTADOS DE COMBATE` y legibilidad en blanco.
 - Servidor local: Vite responde en `http://localhost:5173` con `HTTP 200`.
-- Backend .NET: solución compilada con SDK `9.0.203`; `dotnet build` sin errores y `dotnet test` con 19 pruebas en verde.
+- Backend .NET: solución compilada con SDK `9.0.203`; `dotnet build` sin errores y `dotnet test` con 78 pruebas en verde.
+- Contrato API: `docs/contrato-api.md` v1.3, con 8 métricas de respuesta, habilidades aplicadas y sin histogramas.
 
 ## Traspaso a la siguiente sesión
 

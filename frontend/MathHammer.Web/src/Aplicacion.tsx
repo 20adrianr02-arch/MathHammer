@@ -17,7 +17,7 @@ const perfilAtacanteInicial: PerfilAtacante = {
   habilidades: {
     impactosLetales: false,
     repiteParaImpactar: false,
-    repiteParaHerir: false,
+    repetirTiradaHerida: false,
     repiteUnoParaHerir: false,
     lance: false,
     heridasDevastadoras: false,
@@ -33,6 +33,7 @@ const perfilDefensorInicial: PerfilDefensor = {
   cantidadMiniaturas: '0',
   salvacion: '',
   salvacionInvulnerable: '',
+  sensacionDolor: '6+',
   habilidades: {
     reduccionDanio: false,
     sinDolor: false,
