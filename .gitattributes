@@ -1,0 +1,9 @@
+# Normalización de finales de línea para entornos mixtos (Windows/WSL)
+* text=auto eol=lf
+
+# Archivos binarios y de bloqueo
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff binary
+*.woff2 binary

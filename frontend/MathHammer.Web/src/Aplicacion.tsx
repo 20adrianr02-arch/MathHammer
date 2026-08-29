@@ -8,31 +8,31 @@ import { SelectorTema } from './componentes/SelectorTema'
 import type { NombreTema } from './componentes/SelectorTema'
 
 const perfilAtacanteInicial: PerfilAtacante = {
-  nombreUnidad: 'Escuadra intercesora',
-  cantidadAtaques: '8',
-  impactaA: '3+',
-  fuerza: '5',
-  penetracionArmadura: '-2',
-  danio: '1',
+  nombreUnidad: '',
+  cantidadAtaques: '0',
+  impactaA: '',
+  fuerza: '0',
+  penetracionArmadura: '0',
+  danio: '0',
   habilidades: {
-    impactosLetales: true,
+    impactosLetales: false,
     repiteParaImpactar: false,
     repiteParaHerir: false,
     repiteUnoParaHerir: false,
-    lance: true,
+    lance: false,
     heridasDevastadoras: false,
     golpesSostenidos: false,
   },
-  golpesSostenidos: '2',
+  golpesSostenidos: '1',
 }
 
 const perfilDefensorInicial: PerfilDefensor = {
-  nombreUnidad: 'Guerreros Necrones',
-  resistencia: '4',
-  heridasPorMiniatura: '2',
-  cantidadMiniaturas: '5',
-  salvacion: '3+',
-  salvacionInvulnerable: '5+',
+  nombreUnidad: '',
+  resistencia: '0',
+  heridasPorMiniatura: '0',
+  cantidadMiniaturas: '0',
+  salvacion: '',
+  salvacionInvulnerable: '',
   habilidades: {
     reduccionDanio: false,
     sinDolor: false,
@@ -45,6 +45,7 @@ export function Aplicacion() {
   const [perfilAtacante, establecerPerfilAtacante] = useState(perfilAtacanteInicial)
   const [perfilDefensor, establecerPerfilDefensor] = useState(perfilDefensorInicial)
   const [tema, establecerTema] = useState<NombreTema>('rojo')
+  const [calculoRealizado, establecerCalculoRealizado] = useState(false)
 
   useEffect(() => {
     document.body.dataset.tema = tema
@@ -88,10 +89,14 @@ export function Aplicacion() {
       </section>
 
       <div className="accion">
-        <button className="boton-calcular" type="button" disabled>CALCULAR COMBATE</button>
+        <button className="boton-calcular" type="button" onClick={() => establecerCalculoRealizado(true)}>CALCULAR COMBATE</button>
       </div>
-      <div className="separador-pie" />
-      <PanelResultados />
+      {calculoRealizado && (
+        <>
+          <div className="separador-pie" />
+          <PanelResultados />
+        </>
+      )}
     </main>
   )
 }

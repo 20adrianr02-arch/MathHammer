@@ -24,7 +24,7 @@ export function PanelAtacante({ perfil, alCambiarCampo, alCambiarHabilidad }: Pr
       <div className="rejilla-campos">
         <CampoCombate etiqueta="Nombre de unidad" nombre="nombreAtacante" tipo="texto" valor={perfil.nombreUnidad} alCambiar={(valor) => alCambiarCampo('nombreUnidad', valor)} />
         <CampoCombate etiqueta="Cantidad de ataques" nombre="cantidadAtaques" valor={perfil.cantidadAtaques} alCambiar={(valor) => alCambiarCampo('cantidadAtaques', valor)} />
-        <SelectorCombate etiqueta="Impacta a" nombre="impactaA" valor={perfil.impactaA} opciones={['2+', '3+', '4+', '5+', '6+']} alCambiar={(valor) => alCambiarCampo('impactaA', valor)} />
+        <SelectorCombate etiqueta="Impacta a" nombre="impactaA" valor={perfil.impactaA} opciones={['2+', '3+', '4+', '5+', '6+']} alCambiar={(valor) => alCambiarCampo('impactaA', valor)} marcadorVacio="—" />
         <CampoCombate etiqueta="Fuerza" nombre="fuerza" valor={perfil.fuerza} alCambiar={(valor) => alCambiarCampo('fuerza', valor)} />
         <CampoCombate etiqueta="AP" nombre="penetracionArmadura" valor={perfil.penetracionArmadura} alCambiar={(valor) => alCambiarCampo('penetracionArmadura', valor)} />
         <CampoCombate etiqueta="Daño" nombre="danio" valor={perfil.danio} alCambiar={(valor) => alCambiarCampo('danio', valor)} />

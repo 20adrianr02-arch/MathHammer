@@ -36,11 +36,11 @@
 ## Estado actual
 
 - **Estado:** Completado
-- **Última actualización:** 2026-08-28 11:20 CEST
-- **Tarea:** Sustituir el efecto de humo por un fondo táctico HUD adaptado a la estética.
-- **Objetivo inmediato:** Viñeta oscura, marcos de esquinas y barrido de escaneo auspex con el color del tema.
+- **Última actualización:** 2026-08-28 12:00 CEST
+- **Tarea:** Módulo 0 (scaffolding .NET) y Módulo 1 (probabilidad base) del backend.
+- **Objetivo inmediato:** Solución .NET 9 compilando, con probabilidad 1D6 y distribución binomial probadas.
 - **Bloqueos:** Ninguno conocido.
-- **Próxima acción:** Revisar visualmente el nuevo efecto en el servidor Vite.
+- **Próxima acción:** Módulo 2: reglas de secuencia base (tabla de herida y salvación).
 
 ## Contexto del proyecto
 
@@ -84,6 +84,15 @@
 | `src/MathHammer.Api/Simulacion/` | Futura ubicación del motor de simulación | Completado | 2026-08-26 23:10 CEST |
 | `tests/MathHammer.Pruebas/Reglas/` | Futura ubicación de pruebas de reglas | Completado | 2026-08-26 23:10 CEST |
 | `tests/MathHammer.Pruebas/Simulacion/` | Futura ubicación de pruebas de simulación | Completado | 2026-08-26 23:10 CEST |
+| `global.json` | Fija el SDK de .NET a `9.0.203` | Completado | 2026-08-28 12:00 CEST |
+| `MathHammer.sln` | Solución del backend .NET | Completado | 2026-08-28 12:00 CEST |
+| `src/MathHammer.Api/MathHammer.Api.csproj` | Proyecto web minimal API | Completado | 2026-08-28 12:00 CEST |
+| `src/MathHammer.Api/Program.cs` | Punto de entrada minimal API | Completado | 2026-08-28 12:00 CEST |
+| `src/MathHammer.Api/Reglas/CalculadoraProbabilidades.cs` | Probabilidad de éxito/falmente en 1D6 | Completado | 2026-08-28 12:00 CEST |
+| `src/MathHammer.Api/Reglas/DistribucionBinomial.cs` | Éxitos esperados, exacta y acumulada binomial | Completado | 2026-08-28 12:00 CEST |
+| `tests/MathHammer.Pruebas/MathHammer.Pruebas.csproj` | Proyecto xUnit + FluentAssertions | Completado | 2026-08-28 12:00 CEST |
+| `tests/MathHammer.Pruebas/Reglas/CalculadoraProbabilidadesPruebas.cs` | Pruebas de probabilidad en 1D6 | Completado | 2026-08-28 12:00 CEST |
+| `tests/MathHammer.Pruebas/Reglas/DistribucionBinomialPruebas.cs` | Pruebas de distribución binomial | Completado | 2026-08-28 12:00 CEST |
 | `frontend/MathHammer.Web/package.json` | Dependencias y scripts del proyecto web | Completado | 2026-08-27 00:28 CEST |
 | `frontend/MathHammer.Web/package-lock.json` | Bloqueo de dependencias del proyecto web | Completado | 2026-08-27 00:28 CEST |
 | `frontend/MathHammer.Web/index.html` | Documento HTML de entrada de Vite | Completado | 2026-08-27 00:27 CEST |
@@ -92,9 +101,9 @@
 | `frontend/MathHammer.Web/tsconfig.node.json` | Configuración TypeScript de Vite | Completado | 2026-08-27 00:27 CEST |
 | `frontend/MathHammer.Web/vite.config.ts` | Configuración de Vite y React | Completado | 2026-08-27 00:27 CEST |
 | `frontend/MathHammer.Web/src/main.tsx` | Punto de entrada React | Completado | 2026-08-27 00:27 CEST |
-| `frontend/MathHammer.Web/src/Aplicacion.tsx` | Composición de la maqueta principal | Completado | 2026-08-28 11:20 CEST |
-| `frontend/MathHammer.Web/src/componentes/ControlesCombate.tsx` | Controles visuales reutilizables | Completado | 2026-08-27 18:45 CEST |
-| `frontend/MathHammer.Web/src/componentes/PanelAtacante.tsx` | Panel interactivo del atacante | Completado | 2026-08-28 09:50 CEST |
+| `frontend/MathHammer.Web/src/Aplicacion.tsx` | Composición de la maqueta principal | Completado | 2026-08-28 11:40 CEST |
+| `frontend/MathHammer.Web/src/componentes/ControlesCombate.tsx` | Controles visuales reutilizables | Completado | 2026-08-28 11:40 CEST |
+| `frontend/MathHammer.Web/src/componentes/PanelAtacante.tsx` | Panel interactivo del atacante | Completado | 2026-08-28 11:40 CEST |
 | `frontend/MathHammer.Web/src/componentes/PanelDefensor.tsx` | Panel interactivo del defensor | Completado | 2026-08-28 09:50 CEST |
 | `frontend/MathHammer.Web/src/componentes/PanelResultados.tsx` | Tarjetas de métricas de resultados | Completado | 2026-08-28 10:25 CEST |
 | `frontend/MathHammer.Web/src/componentes/SelectorTema.tsx` | Selector de temas de color dinámicos | Completado | 2026-08-28 10:50 CEST |
@@ -160,9 +169,12 @@
 | 2026-08-28 10:50 CEST | Corrección de z-index del selector de temas, nomenclatura Citadel (Mephiston Red, Averland Sunset, Macragge Blue, Waaagh! Flesh, Abaddon Black), jerarquía tipográfica, estados activos y fondo ambiental con niebla animada. | `frontend/MathHammer.Web/src/componentes/SelectorTema.tsx`, `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; `npm run build` correcto. |
 | 2026-08-28 11:05 CEST | Variables de tema movidas a `body` con sincronización vía `useEffect`; el humo de fondo y el título cambian de color según el tema, y la niebla inicia centrada detrás de `MathHammer`. | `frontend/MathHammer.Web/src/Aplicacion.tsx`, `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; `npm run build` correcto. |
 | 2026-08-28 11:20 CEST | Reemplazo del humo por efecto táctico HUD: viñeta oscura, marcos de esquinas con el color del tema y barrido de escaneo auspex animado. | `frontend/MathHammer.Web/src/Aplicacion.tsx`, `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; `npm run build` correcto. |
+| 2026-08-28 11:30 CEST | Resultados ocultos hasta el primer cálculo: el botón `CALCULAR COMBATE` queda activo y muestra el separador y el panel al pulsarlo. | `frontend/MathHammer.Web/src/Aplicacion.tsx`, `frontend/MathHammer.Web/src/estilos.css`, `CONTEXT.md` | Completado; `npm run build` correcto. |
+| 2026-08-28 11:40 CEST | Campos iniciales vacíos o en `0`; `IMPACTA A` con marcador vacío `—` mediante opción deshabilitada en el selector. | `frontend/MathHammer.Web/src/Aplicacion.tsx`, `frontend/MathHammer.Web/src/componentes/ControlesCombate.tsx`, `frontend/MathHammer.Web/src/componentes/PanelAtacante.tsx`, `CONTEXT.md` | Completado; `npm run build` correcto. |
 | 2026-08-28 09:00 CEST | Inicio de correcciones visuales y del selector condicional de `Sustained Hits`. | `CONTEXT.md` | En curso; se mantiene el alcance exclusivamente web y local. |
 | 2026-08-27 18:34 CEST | Inicio del servidor de desarrollo Vite en el puerto `5173` y comprobación HTTP. | `CONTEXT.md` | Completado; la aplicación responde con `HTTP 200`. |
 | 2026-08-27 18:40 CEST | Inicio de la actualización visual y funcional solicitada para la pantalla web. | `CONTEXT.md` | En curso; se mantienen fuera de alcance el backend y los cálculos. |
+| 2026-08-28 12:00 CEST | Módulo 0: `global.json` (SDK 9.0.203), `MathHammer.sln`, proyecto API minimal y proyecto xUnit con FluentAssertions. Módulo 1: `CalculadoraProbabilidades` y `DistribucionBinomial` con sus pruebas. | `global.json`, `MathHammer.sln`, `src/MathHammer.Api/*`, `tests/MathHammer.Pruebas/*`, `CONTEXT.md` | Completado; `dotnet build` sin errores y 19 pruebas en verde. |
 
 ## Verificaciones realizadas
 
@@ -184,6 +196,7 @@
 - Temas: rojo código, amarillo imperial, azul ultramar y verde tóxico, aplicados mediante variables CSS.
 - Resultados: panel de tarjetas con encabezado `RESULTADOS DE COMBATE` y legibilidad en blanco.
 - Servidor local: Vite responde en `http://localhost:5173` con `HTTP 200`.
+- Backend .NET: solución compilada con SDK `9.0.203`; `dotnet build` sin errores y `dotnet test` con 19 pruebas en verde.
 
 ## Traspaso a la siguiente sesión
 

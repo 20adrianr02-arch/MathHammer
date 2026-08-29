@@ -25,14 +25,16 @@ interface PropiedadesSelector {
   valor: string
   opciones: string[]
   alCambiar: (valor: string) => void
+  marcadorVacio?: string
 }
 
-export function SelectorCombate({ etiqueta, nombre, valor, opciones, alCambiar }: PropiedadesSelector) {
+export function SelectorCombate({ etiqueta, nombre, valor, opciones, alCambiar, marcadorVacio }: PropiedadesSelector) {
   return (
     <label className="campo">
       <span className="campo__etiqueta">{etiqueta}</span>
       <select name={nombre} value={valor} onChange={(evento) => alCambiar(evento.target.value)}>
-        {opciones.map((opcion) => <option key={opcion}>{opcion}</option>)}
+        {marcadorVacio && <option value="" disabled>{marcadorVacio}</option>}
+        {opciones.map((opcion) => <option key={opcion} value={opcion}>{opcion}</option>)}
       </select>
     </label>
   )
