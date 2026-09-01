@@ -6,6 +6,7 @@ import type { PerfilDefensor } from './componentes/PanelDefensor'
 import { PanelResultados } from './componentes/PanelResultados'
 import { SelectorTema } from './componentes/SelectorTema'
 import type { NombreTema } from './componentes/SelectorTema'
+import { usarCalculoCombate } from './hooks/usarCalculoCombate'
 
 const perfilAtacanteInicial: PerfilAtacante = {
   nombreUnidad: '',
@@ -46,7 +47,9 @@ export function Aplicacion() {
   const [perfilAtacante, establecerPerfilAtacante] = useState(perfilAtacanteInicial)
   const [perfilDefensor, establecerPerfilDefensor] = useState(perfilDefensorInicial)
   const [tema, establecerTema] = useState<NombreTema>('rojo')
-  const [calculoRealizado, establecerCalculoRealizado] = useState(false)
+  const { cargando, error, resultado, calcular } = usarCalculoCombate()
+
+  const hayResultado = resultado !== null || cargando || error !== null
 
   useEffect(() => {
     document.body.dataset.tema = tema
@@ -90,12 +93,14 @@ export function Aplicacion() {
       </section>
 
       <div className="accion">
-        <button className="boton-calcular" type="button" onClick={() => establecerCalculoRealizado(true)}>CALCULAR COMBATE</button>
+        <button className="boton-calcular" type="button" onClick={() => calcular(perfilAtacante, perfilDefensor)} disabled={cargando}>
+          {cargando ? 'CALCULANDO...' : 'CALCULAR COMBATE'}
+        </button>
       </div>
-      {calculoRealizado && (
+      {hayResultado && (
         <>
           <div className="separador-pie" />
-          <PanelResultados />
+          <PanelResultados resultado={resultado} cargando={cargando} error={error} />
         </>
       )}
     </main>

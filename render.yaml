@@ -1,0 +1,22 @@
+# Blueprint de Render para MathHammer.
+# Ajusta las URLs y el nombre del repositorio antes de desplegar.
+services:
+  - type: web
+    name: mathhammer-api
+    runtime: docker
+    plan: free
+    dockerfilePath: src/MathHammer.Api/Dockerfile
+    envVars:
+      - key: ASPNETCORE_URLS
+        value: http://+:10000
+      - key: Cors__Origenes__0
+        value: https://mathhammer-web.onrender.com
+
+staticSites:
+  - name: mathhammer-web
+    buildCommand: npm ci && npm run build
+    publishDir: dist
+    rootDir: frontend/MathHammer.Web
+    envVars:
+      - key: VITE_API_URL
+        value: https://mathhammer-api.onrender.com

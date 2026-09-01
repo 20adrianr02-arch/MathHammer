@@ -75,5 +75,9 @@ h1 { font-family: var(--font-display); font-size: 36px; line-height: 1; font-wei
 .resultado--amplio { grid-column: span 3; }
 .resultado__etiqueta { margin: 0; color: #f3f4f6; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
 .resultado__valor { margin: 8px 0 0; font-size: 30px; font-weight: 700; color: #fff; }
+.resultados__estado, .resultados__resumen { margin: 0 0 4px; color: #9ca3af; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
+.resultados__error { margin: 0; color: var(--acento-fuerte); font-size: 14px; letter-spacing: .04em; }
+.resultados__resumen { margin-top: 18px; color: #6b7280; }
+.boton-calcular:disabled { opacity: .6; cursor: wait; }
 @media (max-width: 760px) { .aplicacion { width: min(100% - 26px, 560px); padding-top: 22px; } .cabecera { flex-direction: column; gap: 12px; align-items: center; } .selector-tema { position: static; transform: none; } .paneles-combate { grid-template-columns: 1fr; } .panel { padding: 24px 20px 27px; } .resultados__rejilla { grid-template-columns: repeat(2, minmax(0, 1fr)); } .resultado { grid-column: span 1; } .resultado--amplio { grid-column: span 2; } }
 @media (max-width: 390px) { h1 { font-size: 30px; } .rejilla-campos, .habilidades, .resultados__rejilla { grid-template-columns: 1fr; } .campo:first-child { grid-column: auto; } .resultado, .resultado--amplio { grid-column: auto; } .boton-calcular { min-width: 100%; } }

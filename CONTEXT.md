@@ -36,11 +36,11 @@
 ## Estado actual
 
 - **Estado:** Completado
-- **Última actualización:** 2026-08-29 17:30 CEST
-- **Tarea:** Módulo 6: aplicar las habilidades ofensivas y defensivas; contrato v1.3.
-- **Objetivo inmediato:** Simulador completo con habilidades, métricas por simulación, FNP con desplegable en el front y contrato actualizado.
-- **Bloqueos:** Ninguno conocido.
-- **Próxima acción:** Conectar el frontend al endpoint y revisar el flujo completo.
+- **Última actualización:** 2026-08-29 19:00 CEST
+- **Tarea:** Fases A (seguridad/calidad) y B (CI/CD, Docker, README) del plan de producción.
+- **Objetivo inmediato:** Rate limiter, 500 sin fuga, CORS por config, health, Swagger, CI, Dockerfiles, compose, render.yaml y README.
+- **Bloqueos:** Docker Desktop no está instalado (verificación del compose pendiente).
+- **Próxima acción:** Instalar Docker para validar compose, desplegar en Render y abordar la app móvil.
 
 ## Contexto del proyecto
 
@@ -72,10 +72,16 @@
 | `.opencode/agents/frontend.md` | Agente frontend (React / TypeScript) | Completado | 2026-08-26 22:19 CEST |
 | `.opencode/context7.key` | API key de Context7 (secreto, ignorado por git) | Completado | 2026-08-26 22:30 CEST |
 | `.gitignore` | Exclusiones de git (secretos, bin/, node_modules/) | Completado | 2026-08-26 22:30 CEST |
-| `README.md` | Presentación inicial y estado del proyecto | Completado | 2026-08-26 23:18 CEST |
+| `README.md` | Presentación inicial y estado del proyecto | Completado | 2026-08-29 19:00 CEST |
 | `LICENSE` | Licencia MIT del proyecto | Existente | 2026-08-26 22:04 CEST |
 | `BACKLOG.md` | Historias de usuario del proyecto | Completado | 2026-08-26 22:50 CEST |
 | `docs/contrato-api.md` | Contrato JSON de entrada y salida de la API de combate | Completado | 2026-08-29 17:30 CEST |
+| `.github/workflows/ci.yml` | CI: build y test de backend y frontend | Completado | 2026-08-29 19:00 CEST |
+| `docker-compose.yml` | Orquestación de API y web | Completado | 2026-08-29 19:00 CEST |
+| `src/MathHammer.Api/Dockerfile` | Imagen de la API | Completado | 2026-08-29 19:00 CEST |
+| `frontend/MathHammer.Web/Dockerfile` | Imagen del frontend (nginx) | Completado | 2026-08-29 19:00 CEST |
+| `frontend/MathHammer.Web/nginx.conf` | Proxy del frontend a la API | Completado | 2026-08-29 19:00 CEST |
+| `render.yaml` | Blueprint de despliegue en Render | Completado | 2026-08-29 19:00 CEST |
 | `.opencode/.gitignore` | Exclusiones de dependencias locales de OpenCode | Completado | 2026-08-26 23:18 CEST |
 | `.opencode/package.json` | Dependencia local del plugin de OpenCode | Completado | 2026-08-26 23:18 CEST |
 | `.opencode/package-lock.json` | Versiones bloqueadas de dependencias de OpenCode | Completado | 2026-08-26 23:18 CEST |
@@ -133,8 +139,14 @@
 | `frontend/MathHammer.Web/src/componentes/PanelDefensor.tsx` | Panel interactivo del defensor | Completado | 2026-08-28 09:50 CEST |
 | `frontend/MathHammer.Web/src/componentes/PanelResultados.tsx` | Tarjetas de métricas de resultados | Completado | 2026-08-28 10:25 CEST |
 | `frontend/MathHammer.Web/src/componentes/SelectorTema.tsx` | Selector de temas de color dinámicos | Completado | 2026-08-28 10:50 CEST |
-| `frontend/MathHammer.Web/src/estilos.css` | Estilos visuales grimdark responsive | Completado | 2026-08-28 11:20 CEST |
+| `frontend/MathHammer.Web/src/estilos.css` | Estilos visuales grimdark responsive | Completado | 2026-08-29 18:00 CEST |
 | `frontend/MathHammer.Web/src/vite-env.d.ts` | Tipos de entorno de Vite | Completado | 2026-08-27 00:28 CEST |
+| `frontend/MathHammer.Web/src/contratos/tipos.ts` | Tipos TS del contrato de la API | Completado | 2026-08-29 18:00 CEST |
+| `frontend/MathHammer.Web/src/servicios/mapearPeticion.ts` | Mapeo y validación del formulario a la API | Completado | 2026-08-29 18:00 CEST |
+| `frontend/MathHammer.Web/src/servicios/clienteApi.ts` | Cliente HTTP del endpoint de simulación | Completado | 2026-08-29 18:00 CEST |
+| `frontend/MathHammer.Web/src/hooks/usarCalculoCombate.ts` | Hook de estado de cálculo | Completado | 2026-08-29 18:00 CEST |
+| `frontend/MathHammer.Web/src/servicios/mapearPeticion.test.ts` | Tests del mapeo | Completado | 2026-08-29 18:00 CEST |
+| `frontend/MathHammer.Web/src/componentes/PanelResultados.test.tsx` | Tests de render de resultados | Completado | 2026-08-29 18:00 CEST |
 | `mobile/MathHammer.App/lib/` | Futura ubicación del código fuente Flutter | Completado | 2026-08-26 23:10 CEST |
 | `mobile/MathHammer.App/test/` | Futura ubicación de pruebas Flutter | Completado | 2026-08-26 23:10 CEST |
 | `mobile/MathHammer.App/android/` | Futura configuración nativa Android | Completado | 2026-08-26 23:10 CEST |
@@ -206,6 +218,8 @@
 | 2026-08-29 15:10 CEST | Módulo 4: `ResultadoMetricas` y `CalculadoraMetricas` con las 8 métricas del panel (sin histogramas), usando medios analíticos + simulación. | `src/MathHammer.Api/Simulacion/ResultadoMetricas.cs`, `src/MathHammer.Api/Simulacion/CalculadoraMetricas.cs`, `tests/MathHammer.Pruebas/Simulacion/CalculadoraMetricasPruebas.cs`, `CONTEXT.md` | Completado; `dotnet build` sin errores y 62 pruebas en verde. |
 | 2026-08-29 16:00 CEST | Módulo 5: DTOs de petición/respuesta, `ValidadorPeticion`, `MapeadorPeticion`, endpoint `POST /api/combate/simular` con camelCase, CORS y Problem Details; contrato actualizado a v1.2 (8 métricas, sin histogramas). | `src/MathHammer.Api/Contratos/*`, `src/MathHammer.Api/Program.cs`, `tests/MathHammer.Pruebas/Contratos/*`, `docs/contrato-api.md`, `CONTEXT.md` | Completado; 70 pruebas en verde y verificación manual con `curl`/PowerShell (200 y 422 correctos). |
 | 2026-08-29 17:30 CEST | Módulo 6: habilidades ofensivas y defensivas en el simulador, `PerfilCombate`, métricas por medias de simulación, eliminación de `repiteParaHerir` y `repetirTiradaSalvacion`, FNP con desplegable en el front y contrato v1.3. | `src/MathHammer.Api/Simulacion/*`, `src/MathHammer.Api/Contratos/*`, `src/MathHammer.Api/Program.cs`, `tests/MathHammer.Pruebas/*`, `frontend/MathHammer.Web/src/*`, `docs/contrato-api.md`, `CONTEXT.md` | Completado; 78 pruebas en verde y `npm run build` correcto. |
+| 2026-08-29 18:00 CEST | Conexión frontend-backend: tipos de la API, mapeo/validación del formulario, cliente HTTP, hook de cálculo, `PanelResultados` con métricas reales y Vitest + Testing Library. | `frontend/MathHammer.Web/src/contratos/tipos.ts`, `frontend/MathHammer.Web/src/servicios/*`, `frontend/MathHammer.Web/src/hooks/usarCalculoCombate.ts`, `frontend/MathHammer.Web/src/componentes/PanelResultados.tsx`, `frontend/MathHammer.Web/src/Aplicacion.tsx`, `frontend/MathHammer.Web/vite.config.ts`, `frontend/MathHammer.Web/package.json`, `CONTEXT.md` | Completado; 9 tests de front en verde, `npm run build` correcto y endpoint verificado (200). |
+| 2026-08-29 19:00 CEST | Fases A/B: rate limiter (429), 500 sin filtrar detalle + logging, CORS desde config, health check, Swagger; CI en GitHub Actions, Dockerfiles, compose, nginx, render.yaml y README reescrito. | `src/MathHammer.Api/Program.cs`, `src/MathHammer.Api/appsettings.json`, `src/MathHammer.Api/MathHammer.Api.csproj`, `.github/workflows/ci.yml`, `docker-compose.yml`, `Dockerfile`s, `nginx.conf`, `render.yaml`, `README.md`, `CONTEXT.md` | Completado; 78 tests backend y 9 frontend en verde, `/health` y `/swagger` responden 200. |
 
 ## Verificaciones realizadas
 
@@ -223,6 +237,7 @@
 - Configuración de OpenCode: `.opencode/.gitignore` conserva únicamente `node_modules/` como exclusión; los manifiestos de dependencias pueden versionarse.
 - Documentación: `README.md` describe el estado actual y los próximos pasos.
 - Frontend web: proyecto Vite compilado correctamente con maqueta responsive y estado local; no incluye servicios, API ni cálculos.
+- Frontend: conectado al backend con cliente HTTP, mapeo del formulario, estados de carga/error y 9 tests (Vitest).
 - Tipografía del título: `Cinzel` con `Math` gris `#a1a1aa` y `Hammer` rojo `#c3272b`; interfaz con `Inter`.
 - Temas: rojo código, amarillo imperial, azul ultramar y verde tóxico, aplicados mediante variables CSS.
 - Resultados: panel de tarjetas con encabezado `RESULTADOS DE COMBATE` y legibilidad en blanco.

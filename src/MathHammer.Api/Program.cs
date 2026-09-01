@@ -1,8 +1,10 @@
 using System.Diagnostics;
 using System.Text.Json;
+using System.Threading.RateLimiting;
 using MathHammer.Api.Contratos;
 using MathHammer.Api.Simulacion;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,21 +13,48 @@ builder.Services.ConfigureHttpJsonOptions(opciones =>
     opciones.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
 });
 
+var origenesPermitidos = builder.Configuration.GetSection("Cors:Origenes").Get<string[]>() ?? [];
+
 builder.Services.AddCors(opciones =>
 {
-    opciones.AddPolicy("permitirFrontendLocal", politica =>
-        politica.WithOrigins("http://localhost:5173")
+    opciones.AddPolicy("permitirFrontend", politica =>
+        politica.WithOrigins(origenesPermitidos)
                 .AllowAnyHeader()
                 .AllowAnyMethod());
 });
 
+builder.Services.AddHealthChecks();
+
+builder.Services.AddRateLimiter(opciones =>
+{
+    opciones.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    opciones.AddPolicy("simulacion", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "anónimo",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 20,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+            }));
+});
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
-app.UseCors("permitirFrontendLocal");
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseCors("permitirFrontend");
+app.UseRateLimiter();
+
+app.MapHealthChecks("/health");
 
 app.MapGet("/", () => "MathHammer API");
 
-app.MapPost("/api/combate/simular", (PeticionCombate peticion) =>
+app.MapPost("/api/combate/simular", (PeticionCombate peticion, ILogger<Program> logger) =>
 {
     IReadOnlyList<string> errores = ValidadorPeticion.ObtenerErrores(peticion);
     if (errores.Count > 0)
@@ -51,9 +80,10 @@ app.MapPost("/api/combate/simular", (PeticionCombate peticion) =>
     }
     catch (Exception excepcion)
     {
-        return ResultadosError.Inesperado(excepcion);
+        logger.LogError(excepcion, "Error inesperado al simular el combate.");
+        return ResultadosError.Inesperado();
     }
-});
+}).RequireRateLimiting("simulacion");
 
 app.Run();
 
@@ -74,13 +104,13 @@ public static class ResultadosError
         return Results.Json(problema, statusCode: problema.Status);
     }
 
-    public static IResult Inesperado(Exception excepcion)
+    public static IResult Inesperado()
     {
         var problema = new Microsoft.AspNetCore.Mvc.ProblemDetails
         {
             Status = StatusCodes.Status500InternalServerError,
             Title = "Error inesperado del servidor.",
-            Detail = excepcion.Message,
+            Detail = "Se ha producido un error interno. Inténtalo de nuevo.",
         };
 
         return Results.Json(problema, statusCode: problema.Status);
