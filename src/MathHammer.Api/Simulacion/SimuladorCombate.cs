@@ -36,11 +36,7 @@ public static class SimuladorCombate
         TipoRepeticion repeticionImpacto = perfil.RepiteParaImpactar ? TipoRepeticion.Todas : TipoRepeticion.Ninguna;
         TipoRepeticion repeticionHerida = ObtenerRepeticionHerida(perfil);
 
-        int cantidadAtaques = perfil.AtaquesAleatorios is { } ataquesAleatorios
-            ? ResolverDados.Resolver(ataquesAleatorios, generador)
-            : perfil.CantidadAtaques;
-
-        for (int ataque = 0; ataque < cantidadAtaques; ataque++)
+        for (int ataque = 0; ataque < perfil.CantidadAtaques; ataque++)
         {
             int rollImpacto = TirarConRepeticion(generador, perfil.ImpactaA, modificadorImpacto, repeticionImpacto);
 
@@ -162,13 +158,9 @@ public static class SimuladorCombate
             }
         }
 
-        int danioBruto = perfil.DanioAleatorio is { } danioAleatorio
-            ? ResolverDados.Resolver(danioAleatorio, generador)
-            : perfil.Danio;
-
         int danioEfectivo = perfil.ReduccionDanio
-            ? Math.Max(1, danioBruto - 1)
-            : danioBruto;
+            ? Math.Max(1, perfil.Danio - 1)
+            : perfil.Danio;
 
         if (perfil.SensacionDolor is int sensacionDolor)
         {
@@ -259,17 +251,14 @@ public static class SimuladorCombate
             throw new ArgumentOutOfRangeException(nameof(perfil.CantidadAtaques), "La cantidad de ataques no puede ser negativa.");
         }
 
-        ValidarDados(perfil.AtaquesAleatorios, "ataquesAleatorios");
-        ValidarDados(perfil.DanioAleatorio, "danioAleatorio");
-
         if (perfil.ImpactaA < 2 || perfil.ImpactaA > 6)
         {
             throw new ArgumentOutOfRangeException(nameof(perfil.ImpactaA), "La habilidad de impacto debe estar entre 2 y 6.");
         }
 
-        if (perfil.DanioAleatorio is null && perfil.Danio < 1)
+        if (perfil.Danio < 1)
         {
-            throw new ArgumentOutOfRangeException(nameof(perfil.Danio), "El daño debe ser al menos 1 o indicarse como dado aleatorio.");
+            throw new ArgumentOutOfRangeException(nameof(perfil.Danio), "El daño debe ser al menos 1.");
         }
 
         if (perfil.GolpesSostenidos < 0)
@@ -290,24 +279,6 @@ public static class SimuladorCombate
         if (perfil.CantidadMiniaturas < 1)
         {
             throw new ArgumentOutOfRangeException(nameof(perfil.CantidadMiniaturas), "La cantidad de miniaturas debe ser al menos 1.");
-        }
-    }
-
-    private static void ValidarDados(Contratos.DadosAleatorios? dados, string nombre)
-    {
-        if (dados is null)
-        {
-            return;
-        }
-
-        if (dados.CantidadDados < 1)
-        {
-            throw new ArgumentOutOfRangeException(nombre, "La cantidad de dados debe ser al menos 1.");
-        }
-
-        if (dados.Caras < 2 || dados.Caras > 6)
-        {
-            throw new ArgumentOutOfRangeException(nombre, "Las caras del dado deben estar entre 2 y 6.");
         }
     }
 

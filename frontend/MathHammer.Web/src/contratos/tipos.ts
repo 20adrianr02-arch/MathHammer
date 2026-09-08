@@ -14,19 +14,11 @@ export interface HabilidadesArmaApi {
   heridasDevastadoras: boolean
 }
 
-export interface DadosApi {
-  cantidadDados: number
-  caras: number
-  modificador: number
-}
-
 export interface PerfilArmaApi {
   cantidadAtaques: number
-  ataquesAleatorios: DadosApi | null
   fuerza: number
   penetracionArmadura: number
   danio: number
-  danioAleatorio: DadosApi | null
   repetirTiradaHerida: boolean
   habilidades: HabilidadesArmaApi
 }

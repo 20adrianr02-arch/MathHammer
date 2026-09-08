@@ -19,37 +19,6 @@ export function CampoCombate({ etiqueta, nombre, tipo = 'number', valor, alCambi
   )
 }
 
-interface PropiedadesCampoConDados {
-  etiqueta: string
-  nombre: string
-  valor: string
-  activo: boolean
-  alCambiar: (valor: string) => void
-  alCambiarActivo: (activo: boolean) => void
-}
-
-export function CampoConDados({ etiqueta, nombre, valor, activo, alCambiar, alCambiarActivo }: PropiedadesCampoConDados) {
-  return (
-    <div className="campo campo--dados">
-      <span className="campo__etiqueta">{etiqueta}</span>
-      <span className="campo__control">
-        <input
-          className="campo__entrada"
-          name={nombre}
-          type={activo ? 'text' : 'number'}
-          value={valor}
-          placeholder={activo ? 'D6+1' : undefined}
-          onChange={(evento) => alCambiar(evento.target.value)}
-        />
-        <label className="campo__toggle">
-          <input type="checkbox" checked={activo} onChange={(evento) => alCambiarActivo(evento.target.checked)} />
-          <span>Dados (D3/D6)</span>
-        </label>
-      </span>
-    </div>
-  )
-}
-
 interface PropiedadesSelector {
   etiqueta: string
   nombre: string

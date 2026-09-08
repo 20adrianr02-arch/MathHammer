@@ -1,5 +1,4 @@
 using FluentAssertions;
-using MathHammer.Api.Contratos;
 using MathHammer.Api.Reglas;
 using MathHammer.Api.Simulacion;
 
@@ -198,31 +197,6 @@ public class SimuladorCombatePruebas
     }
 
     [Fact]
-    public void AtaquesAleatorios_D6_ConvergenALaMediaDeAtaques()
-    {
-        // 1D6 ataques (media 3.5) impactando a 2+ (5/6): impactos esperados = 3.5 * 5/6.
-        var perfil = CrearPerfil(cantidadAtaques: 0, heridasPorMiniatura: 1000000, impactaA: 2, ataquesAleatorios: new DadosAleatorios(1, 6, 0));
-
-        ResultadoIteracion[] resultados = SimuladorCombate.Simular(perfil, 20000, semilla: 9);
-
-        double mediaImpactos = resultados.Average(r => r.ImpactosLogrados);
-        mediaImpactos.Should().BeApproximately(3.5 * (5.0 / 6.0), 0.3);
-    }
-
-    [Fact]
-    public void DanioAleatorio_D6_ConvergenALaMediaDeDanio()
-    {
-        // 1000 ataques, impacta 2+ (5/6), hiere 2+ (5/6), falla salvación 4+ (1/2) y daño 1D6 (media 3.5).
-        var perfil = CrearPerfil(cantidadAtaques: 1000, heridasPorMiniatura: 1000000, impactaA: 2, fuerza: 8, resistencia: 4, danio: 0, danioAleatorio: new DadosAleatorios(1, 6, 0));
-
-        ResultadoIteracion[] resultados = SimuladorCombate.Simular(perfil, 20000, semilla: 10);
-
-        double esperado = 1000.0 * (5.0 / 6.0) * (5.0 / 6.0) * 0.5 * 3.5;
-        double mediaDanio = resultados.Average(r => r.HeridasInfligidas);
-        mediaDanio.Should().BeApproximately(esperado, 10.0);
-    }
-
-    [Fact]
     public void Impactos_NoDependenDeLaCantidadDeMiniaturas()
     {
         // Todos los ataques se resuelven siempre; solo el daño se descarta si la
@@ -285,19 +259,15 @@ public class SimuladorCombatePruebas
         int? sensacionDolor = null,
         bool reduccionDanio = false,
         bool penalizacionImpactar = false,
-        bool penalizacionHerir = false,
-        DadosAleatorios? ataquesAleatorios = null,
-        DadosAleatorios? danioAleatorio = null)
+        bool penalizacionHerir = false)
     {
         return new PerfilCombate
         {
             CantidadAtaques = cantidadAtaques,
-            AtaquesAleatorios = ataquesAleatorios,
             ImpactaA = impactaA,
             Fuerza = fuerza,
             PenetracionArmadura = 0,
             Danio = danio,
-            DanioAleatorio = danioAleatorio,
             Resistencia = resistencia,
             Salvacion = 4,
             SalvacionInvulnerable = null,

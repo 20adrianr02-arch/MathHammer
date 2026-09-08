@@ -36,10 +36,10 @@
 ## Estado actual
 
 - **Estado:** Completado
-- **Última actualización:** 2026-09-08 21:33 CEST
-- **Tarea:** Fix en el simulador: los impactos/heridas/salvaciones ya no dependen de la cantidad de miniaturas (se resuelven todos los ataques; el daño sobrante se descarta).
-- **Objetivo inmediato:** Cerrar apartados 1 (Docker/Render, verificación pendiente) y 2 (app Flutter).
-- **Bloqueos:** Docker Desktop no instalado (apartado 1 = documentación); Flutter/Android SDK no instalados (apartado 2).
+- **Última actualización:** 2026-09-08 22:01 CEST
+- **Tarea:** Reversión de los dados aleatorios D3/D6 (ataques y daño) → valores fijos; se conservan los fixes de fidelidad 40k.
+- **Objetivo inmediato:** Cerrar apartados 1 (RUNBOOK `docs/despliegue.md`) y 2 (app Flutter).
+- **Bloqueos:** Docker Desktop requiere activar la integración WSL (apartado 1); Flutter/Android SDK no instalados (apartado 2).
 - **Próxima acción:** Apartado 1 (RUNBOOK `docs/despliegue.md`) y apartado 2 (instalar Flutter y crear la app).
 
 ## Contexto del proyecto
@@ -107,14 +107,12 @@
 | `src/MathHammer.Api/Contratos/ResultadoCombate.cs` | DTO respuesta de combate | Completado | 2026-08-29 16:00 CEST |
 | `src/MathHammer.Api/Contratos/ResumenSimulacion.cs` | DTO resumen de la simulación | Completado | 2026-08-29 16:00 CEST |
 | `src/MathHammer.Api/Contratos/ValidadorPeticion.cs` | Validación fail-fast de la petición | Completado | 2026-08-29 16:00 CEST |
-| `src/MathHammer.Api/Contratos/MapeadorPeticion.cs` | Mapeo petición → perfil base | Completado | 2026-09-08 14:19 CEST |
-| `src/MathHammer.Api/Contratos/DadosAleatorios.cs` | Tipo `DadosAleatorios` (cantidad, caras, modificador) | Completado | 2026-09-08 14:19 CEST |
+| `src/MathHammer.Api/Contratos/MapeadorPeticion.cs` | Mapeo petición → perfil base | Completado | 2026-09-08 22:00 CEST |
 | `src/MathHammer.Api/Simulacion/GeneradorAleatorio.cs` | Generador aleatorio con semilla reproducible | Completado | 2026-08-29 14:45 CEST |
 | `src/MathHammer.Api/Simulacion/PerfilCombateBase.cs` | Perfil de combate base (sin habilidades) | Eliminado | 2026-08-29 17:30 CEST |
 | `src/MathHammer.Api/Simulacion/PerfilCombate.cs` | Perfil completo con habilidades | Completado | 2026-08-29 17:30 CEST |
 | `src/MathHammer.Api/Simulacion/ResultadoIteracion.cs` | Heridas infligidas y miniaturas destruidas por iteración | Completado | 2026-08-29 14:45 CEST |
-| `src/MathHammer.Api/Simulacion/SimuladorCombate.cs` | Simulador Monte Carlo de la secuencia base | Completado | 2026-09-08 14:19 CEST |
-| `src/MathHammer.Api/Simulacion/ResolverDados.cs` | Resolución de una expresión de dados (mín. 1) | Completado | 2026-09-08 14:19 CEST |
+| `src/MathHammer.Api/Simulacion/SimuladorCombate.cs` | Simulador Monte Carlo de la secuencia base | Completado | 2026-09-08 22:00 CEST |
 | `src/MathHammer.Api/Simulacion/ResultadoMetricas.cs` | Las 8 métricas del panel de resultados | Completado | 2026-08-29 15:10 CEST |
 | `src/MathHammer.Api/Simulacion/CalculadoraMetricas.cs` | Medios analíticos, letalidad y percentiles | Completado | 2026-08-29 15:10 CEST |
 | `tests/MathHammer.Pruebas/MathHammer.Pruebas.csproj` | Proyecto xUnit + FluentAssertions | Completado | 2026-08-28 12:00 CEST |
@@ -124,8 +122,7 @@
 | `tests/MathHammer.Pruebas/Reglas/ReglaSalvacionPruebas.cs` | Pruebas de la salvación | Completado | 2026-08-29 14:20 CEST |
 | `tests/MathHammer.Pruebas/Simulacion/GeneradorAleatorioPruebas.cs` | Pruebas de semilla y rango del dado | Completado | 2026-08-29 14:45 CEST |
 | `tests/MathHammer.Pruebas/Simulacion/SimuladorCombatePruebas.cs` | Pruebas de convergencia, no-spillover y reproducibilidad | Completado | 2026-08-29 14:45 CEST |
-| `tests/MathHammer.Pruebas/Simulacion/CalculadoraMetricasPruebas.cs` | Pruebas de las métricas del panel | Completado | 2026-08-29 15:10 CEST |
-| `tests/MathHammer.Pruebas/Simulacion/ResolverDadosPruebas.cs` | Pruebas de la resolución de dados aleatorios | Completado | 2026-09-08 14:19 CEST |
+| `tests/MathHammer.Pruebas/Simulacion/CalculadoraMetricasPruebas.cs` | Pruebas de las métricas del panel | Completado | 2026-09-08 21:44 CEST |
 | `tests/MathHammer.Pruebas/Contratos/MapeadorPeticionPruebas.cs` | Pruebas del mapeo petición → perfil | Completado | 2026-08-29 16:00 CEST |
 | `tests/MathHammer.Pruebas/Contratos/ValidadorPeticionPruebas.cs` | Pruebas de validación de la petición | Completado | 2026-08-29 16:00 CEST |
 | `frontend/MathHammer.Web/package.json` | Dependencias y scripts del proyecto web | Completado | 2026-08-27 00:28 CEST |
@@ -175,6 +172,7 @@
 | 2026-09-08 14:19 CEST | Dados aleatorios con **fuente única excluyente**: por atributo (ataques/daño) debe venir o el valor fijo (`>0`) o `Dados`, nunca ambos ni ninguno (422). | El contrato v1.3 ya documentaba `ataquesAleatorios`/`danioAleatorio`, pero el código no los implementaba; se alinea código↔contrato. | `ValidadorPeticion` y el mapeo del front aplican la exclusión; los payloads de la web envían `null` explícito en modo fijo. |
 | 2026-09-08 14:19 CEST | Representar el dado en JSON con `cantidadDados`, `caras` y `modificador` (en lugar de `dados`). | Evita la colisión C# de propiedad con el nombre de su tipo y mantiene el estilo descriptivo del proyecto. | Contrato v1.4; el tipo backend es `DadosAleatorios` con esas tres propiedades. |
 | 2026-09-08 14:19 CEST | UI del dado como campo de texto + casilla "Dados (D3/D6)": el mismo campo alterna entre número fijo y expresión (`D3`, `D6`, `2D3`, `D6+1`…). | El usuario pidió texto plano con casilla adyacente en lugar de selectores de dados. | Nuevo componente `CampoConDados` reutilizado en Ataques y Daño; la expresión se parsea en el mapeo. |
+| 2026-09-08 22:01 CEST | Eliminar la funcionalidad de dados aleatorios (D3/D6) en ataques y daño; volver a valores fijos. | El usuario consideró los dados demasiado complejos y que afectaban al funcionamiento. | Se revierte el apartado 3 de dados; se mantienen los fixes de fidelidad (impactos independientes, daño potencial, repeticiones). |
 
 ## Registro de pasos
 
@@ -233,6 +231,7 @@
 | 2026-09-08 21:33 CEST | Fix simulador: eliminadas las condiciones `miniaturasVivas > 0` de los bucles de ataque/herida/salvación; el daño sobrante se descarta en `AplicarHerida` si la unidad ya está destruida. Impactos/heridas/salvaciones pasan a depender solo de los ataques declarados (fiel a WH40k 10.ª ed). | `src/MathHammer.Api/Simulacion/SimuladorCombate.cs`, `tests/MathHammer.Pruebas/Simulacion/SimuladorCombatePruebas.cs`, `CONTEXT.md` | Completado; 93 tests backend en verde (nuevo test de regresión `Impactos_NoDependenDeLaCantidadDeMiniaturas`). |
 | 2026-09-08 21:44 CEST | Daño potencial: nuevo `DanioPotencial` en `ResultadoIteracion`; `danioMedioEsperado` y percentiles muestran el daño potencial del ataque (sin acotar), mientras que `miniaturasEliminadas` y `probabilidadMatarUnidad` se acotan por la unidad. | `Simulacion/ResultadoIteracion.cs`, `Simulacion/SimuladorCombate.cs`, `Simulacion/CalculadoraMetricas.cs`, `docs/contrato-api.md`, `tests/.../CalculadoraMetricasPruebas.cs`, `SimuladorCombatePruebas.cs` | Completado; 94 tests en verde. |
 | 2026-09-08 21:44 CEST | Fix fidelidad: las repeticiones de dados fallidos (`repiteParaImpactar`, `Twin-linked`) relanzan todos los dados que fallan **tras el modificador** (antes solo `roll < requerido`). | `Simulacion/SimuladorCombate.cs`, `tests/.../SimuladorCombatePruebas.cs` | Completado; 95 tests en verde (nuevo test `RepiteParaImpactar_ConPenalizacion_RelanzaTodosLosFallidos`). |
+| 2026-09-08 22:01 CEST | Reversión de los dados aleatorios: se elimina toda la funcionalidad D3/D6 (ataques y daño) y se vuelve a valores fijos ("daño plano"). Se conservan los fixes de fidelidad (impactos independientes de miniaturas, daño potencial, repeticiones). | `PerfilArma.cs`, `PerfilCombate.cs`, `ValidadorPeticion.cs`, `MapeadorPeticion.cs`, `SimuladorCombate.cs`, `ResultadoIteracion.cs` (se mantiene `DanioPotencial`), borrados `DadosAleatorios.cs`, `ResolverDados.cs`, `ResolverDadosPruebas.cs`; frontend `tipos.ts`, `ControlesCombate.tsx`, `PanelAtacante.tsx`, `Aplicacion.tsx`, `mapearPeticion.ts`, `estilos.css`, `mapearPeticion.test.ts`; `docs/contrato-api.md`, `README.md`, `CONTEXT.md` | Completado; 81 tests backend y 9 frontend en verde, `npm run build` correcto. |
 
 ## Verificaciones realizadas
 
@@ -255,19 +254,19 @@
 - Temas: rojo código, amarillo imperial, azul ultramar y verde tóxico, aplicados mediante variables CSS.
 - Resultados: panel de tarjetas con encabezado `RESULTADOS DE COMBATE` y legibilidad en blanco.
 - Servidor local: Vite responde en `http://localhost:5173` con `HTTP 200`.
-- Backend .NET: solución compilada con SDK `9.0.203`; `dotnet build` sin errores y `dotnet test` con 92 pruebas en verde.
-- Contrato API: `docs/contrato-api.md` v1.4, con 8 métricas de respuesta, habilidades aplicadas, dados aleatorios (fuente única) y sin histogramas.
-- Dados aleatorios: fuente única validada (422 si ambos o ninguno), convergencia Monte Carlo de ataques `D6` y daño `D6`, `ResolverDados` con mínimo 1 y reproducible por semilla.
-- Frontend: `CampoConDados` (texto plano + casilla "Dados (D3/D6)"), parseo de expresiones `D3/D6/2D3/D6+1`, 12 tests en verde y `npm run build` correcto.
+- Backend .NET: solución compilada con SDK `9.0.203`; `dotnet build` sin errores y `dotnet test` con 81 pruebas en verde.
+- Contrato API: `docs/contrato-api.md` v1.4, con 8 métricas de respuesta, habilidades aplicadas, daño potencial (sin acotar) y sin histogramas.
+- Daño potencial: impactos/heridas/salvaciones independientes del tamaño de la unidad; `danioMedioEsperado` y percentiles muestran el daño potencial; `miniaturasEliminadas` y `probabilidadMatarUnidad` se acotan por la unidad.
+- Frontend: 9 tests en verde y `npm run build` correcto.
 
 ## Traspaso a la siguiente sesión
 
-- **Estado al cerrar:** Fix del simulador aplicado (impactos independientes de las miniaturas); 93 tests backend y 12 frontend en verde; cambios sin commit.
-- **Última tarea realizada:** Corregir el simulador para resolver todos los ataques y descartar el daño sobrante (sin spillover), conforme a WH40k 10.ª ed.
-- **Archivos modificados en esta sesión:** backend `Simulacion/SimuladorCombate.cs`, `tests/.../SimuladorCombatePruebas.cs`, `frontend/.../index.html`, `Aplicacion.tsx`, `estilos.css`, `CONTEXT.md`, `render.yaml` (subido).
-- **Decisiones pendientes:** Ninguna sobre el apartado 3.
-- **Bloqueos:** Docker Desktop no instalado (apartado 1); Flutter/Android SDK no instalados (apartado 2).
-- **Siguiente paso recomendado:** Apartado 1 (auditar Dockerfiles/compose/render.yaml y crear `docs/despliegue.md`) y apartado 2 (instalar Flutter en WSL y crear la app).
+- **Estado al cerrar:** Cierre de sesión 2026-09-08 22:05. Lógica, backend y frontend web completos y verificados (81 tests backend, 9 frontend, build OK). Reversión de los dados D3/D6 aplicada y pendiente de subir. Cambios commiteados en local sin push.
+- **Última tarea realizada:** Eliminar la funcionalidad de dados aleatorios (ataques y daño) y volver a valores fijos, conservando los fixes de fidelidad 40k.
+- **Archivos modificados en esta sesión:** backend `PerfilArma.cs`, `PerfilCombate.cs`, `ValidadorPeticion.cs`, `MapeadorPeticion.cs`, `SimuladorCombate.cs` (borrados `DadosAleatorios.cs`, `ResolverDados.cs` y sus pruebas); frontend `tipos.ts`, `ControlesCombate.tsx`, `PanelAtacante.tsx`, `Aplicacion.tsx`, `mapearPeticion.ts`, `estilos.css`, `mapearPeticion.test.ts`, `index.html`, `public/favicon.svg`; `docs/contrato-api.md`, `README.md`, `CONTEXT.md`.
+- **Pendiente de subir a GitHub (sin push):** reversión de dados D3/D6 + título/logo de la web. El usuario pidió no subir por ahora.
+- **Bloqueos:** Docker Desktop requiere activar la integración WSL (apartado 1); Flutter/Android SDK no instalados (apartado 2).
+- **Siguiente paso recomendado:** Apartado 1 (crear `docs/despliegue.md`) y apartado 2 (instalar Flutter en WSL y crear la app móvil).
 
 ## Historial resumido
 

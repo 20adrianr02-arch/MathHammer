@@ -42,11 +42,9 @@ RFC 9457.
   },
   "arma": {
     "cantidadAtaques": 8,
-    "ataquesAleatorios": null,
     "fuerza": 5,
     "penetracionArmadura": -2,
     "danio": 1,
-    "danioAleatorio": null,
     "repetirTiradaHerida": false,
     "habilidades": {
       "lanza": true,
@@ -87,12 +85,10 @@ RFC 9457.
 
 | Campo | Tipo | Obligatorio | Descripción |
 |---|---|---:|---|
-| `cantidadAtaques` | entero | Sí | Ataques fijos. Se ignora si se usa `ataquesAleatorios`. |
-| `ataquesAleatorios` | `Dados` o `null` | Sí | Fuente alternativa para obtener la cantidad de ataques. |
+| `cantidadAtaques` | entero | Sí | Número de ataques fijos. |
 | `fuerza` | entero | Sí | Fuerza del arma. |
 | `penetracionArmadura` | entero | Sí | AP del arma, normalmente `0` o negativo. |
-| `danio` | entero | Sí | Daño fijo. Se ignora si se usa `danioAleatorio`. |
-| `danioAleatorio` | `Dados` o `null` | Sí | Fuente alternativa para obtener el daño de cada impacto. |
+| `danio` | entero | Sí | Daño fijo del arma. |
 | `repetirTiradaHerida` | booleano | Sí | Regla `Twin-linked`: repite tiradas de herida fallidas. Es la repetición completa de herida. |
 | `habilidades` | `HabilidadesArma` | Sí | Habilidades universales incluidas en la v1. |
 
@@ -127,38 +123,8 @@ RFC 9457.
 | `iteraciones` | entero | Sí | Número de simulaciones, entre `1` y `100000`. |
 | `semillaAleatoria` | entero o `null` | Sí | Semilla opcional para reproducir una simulación. |
 
-### `Dados`
-
-Representa una expresión de dados como `D3`, `D6`, `D6+1` o `2D6`.
-
-```json
-{
-  "cantidadDados": 1,
-  "caras": 6,
-  "modificador": 1
-}
-```
-
-Sus campos:
-
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `cantidadDados` | entero | Número de dados, mayor que `0`. |
-| `caras` | entero | Caras de cada dado, entre `2` y `6`. |
-| `modificador` | entero | Sumando aplicado al total, puede ser negativo. |
-
-El resultado es la suma de lanzar `cantidadDados` dados de `caras` caras más el
-`modificador`, con un mínimo de `1`.
-
 ### Reglas de nulabilidad y exclusión
 
-- `ataquesAleatorios` y `danioAleatorio` deben ser `null` cuando se usa el
-  valor fijo correspondiente.
-- Para cada atributo (ataques y daño) debe indicarse exactamente una fuente:
-  el valor fijo (mayor que `0`) o el dado aleatorio (`Dados`). Si se envían
-  ambos, o ninguno, el backend responde `422`.
-- Si se proporciona un dado aleatorio, el valor fijo del mismo campo debe
-  ser `0`.
 - `salvacionInvulnerable` y `sensacionDolor` usan `null` para indicar que la
   regla no existe.
 - `repiteParaImpactar` indica repetición completa de las tiradas de impacto
@@ -247,17 +213,13 @@ siguiente miniatura (sin spillover).
   mínimo de `1` punto de daño.
 - La salvación invulnerable no se modifica por AP.
 - FNP se resuelve individualmente por cada punto de daño.
-- La cantidad de ataques aleatorios se resuelve una vez por iteración, antes de
-  procesar los ataques.
-- El daño aleatorio se resuelve por cada herida no salvada, antes de aplicar
-  `reduccionDanio` y FNP.
 - El daño se asigna primero a miniaturas previamente heridas y no existe
   spillover.
 
 ## Decisiones de alcance v1
 
 - Una petición contiene un único perfil de arma.
-- Se admiten ataques y daño fijos o expresados mediante dados.
+- Se admiten ataques y daño fijos.
 - Las habilidades de arma soportadas son `Lethal Hits`, `Sustained Hits X`,
   `Devastating Wounds`, `Twin-linked` y `Lance`.
 - Las repeticiones del atacante son `repiteParaImpactar` y `repiteUnoParaHerir`;

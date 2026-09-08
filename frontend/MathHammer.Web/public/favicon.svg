@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="5" fill="#0d0e11"/>
+  <rect x="1" y="1" width="30" height="30" rx="4" fill="none" stroke="#c3272b" stroke-width="1.5"/>
+  <text x="16" y="22" text-anchor="middle" font-family="Cinzel, Georgia, serif" font-size="18" font-weight="700">
+    <tspan fill="#a1a1aa">M</tspan><tspan fill="#c3272b">H</tspan>
+  </text>
+</svg>

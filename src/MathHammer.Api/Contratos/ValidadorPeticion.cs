@@ -32,70 +32,24 @@ public static class ValidadorPeticion
 
     private static void ValidarArma(PerfilArma arma, List<string> errores)
     {
-        ValidarFuenteAtaques(arma, errores);
-        ValidarFuenteDanio(arma, errores);
+        if (arma.CantidadAtaques < 0)
+        {
+            errores.Add("cantidadAtaques no puede ser negativa.");
+        }
 
         if (arma.Fuerza < 1)
         {
             errores.Add("fuerza debe ser al menos 1.");
         }
 
+        if (arma.Danio < 1)
+        {
+            errores.Add("danio debe ser al menos 1.");
+        }
+
         if (arma.Habilidades.GolpesSostenidos < 0)
         {
             errores.Add("golpesSostenidos no puede ser negativo.");
-        }
-    }
-
-    private static void ValidarFuenteAtaques(PerfilArma arma, List<string> errores)
-    {
-        if (arma.AtaquesAleatorios is null)
-        {
-            if (arma.CantidadAtaques < 1)
-            {
-                errores.Add("cantidadAtaques debe ser al menos 1 o indicarse ataquesAleatorios.");
-            }
-
-            return;
-        }
-
-        if (arma.CantidadAtaques > 0)
-        {
-            errores.Add("ataquesAleatorios debe ser null cuando se usa cantidadAtaques.");
-        }
-
-        ValidarDadosAleatorios(arma.AtaquesAleatorios, "ataquesAleatorios", errores);
-    }
-
-    private static void ValidarFuenteDanio(PerfilArma arma, List<string> errores)
-    {
-        if (arma.DanioAleatorio is null)
-        {
-            if (arma.Danio < 1)
-            {
-                errores.Add("danio debe ser al menos 1 o indicarse danioAleatorio.");
-            }
-
-            return;
-        }
-
-        if (arma.Danio > 0)
-        {
-            errores.Add("danioAleatorio debe ser null cuando se usa danio.");
-        }
-
-        ValidarDadosAleatorios(arma.DanioAleatorio, "danioAleatorio", errores);
-    }
-
-    private static void ValidarDadosAleatorios(DadosAleatorios dados, string nombre, List<string> errores)
-    {
-        if (dados.CantidadDados < 1)
-        {
-            errores.Add($"{nombre}.cantidadDados debe ser al menos 1.");
-        }
-
-        if (dados.Caras < 2 || dados.Caras > 6)
-        {
-            errores.Add($"{nombre}.caras debe estar entre 2 y 6.");
         }
     }
 

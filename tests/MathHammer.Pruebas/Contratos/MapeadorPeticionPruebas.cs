@@ -60,26 +60,6 @@ public class MapeadorPeticionPruebas
         perfil.PenalizacionHerir.Should().BeTrue();
     }
 
-    [Fact]
-    public void MapearPerfil_ConDadosAleatorios_LosIncluye()
-    {
-        PeticionCombate peticion = CrearPeticion() with
-        {
-            Arma = CrearPeticion().Arma with
-            {
-                CantidadAtaques = 0,
-                AtaquesAleatorios = new DadosAleatorios(2, 3, 0),
-                Danio = 0,
-                DanioAleatorio = new DadosAleatorios(1, 6, 1),
-            },
-        };
-
-        PerfilCombate perfil = MapeadorPeticion.MapearPerfil(peticion);
-
-        perfil.AtaquesAleatorios.Should().Be(new DadosAleatorios(2, 3, 0));
-        perfil.DanioAleatorio.Should().Be(new DadosAleatorios(1, 6, 1));
-    }
-
     private static PeticionCombate CrearPeticion()
     {
         return new PeticionCombate(
