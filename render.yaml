@@ -1,5 +1,4 @@
 # Blueprint de Render para MathHammer.
-# Ajusta las URLs y el nombre del repositorio antes de desplegar.
 services:
   - type: web
     name: mathhammer-api
@@ -12,11 +11,11 @@ services:
       - key: Cors__Origenes__0
         value: https://mathhammer-web.onrender.com
 
-staticSites:
-  - name: mathhammer-web
-    buildCommand: npm ci && npm run build
-    publishDir: dist
-    rootDir: frontend/MathHammer.Web
+  - type: web
+    name: mathhammer-web
+    runtime: static
+    buildCommand: npm --prefix frontend/MathHammer.Web ci && npm --prefix frontend/MathHammer.Web run build
+    staticPublishPath: frontend/MathHammer.Web/dist
     envVars:
       - key: VITE_API_URL
         value: https://mathhammer-api.onrender.com
