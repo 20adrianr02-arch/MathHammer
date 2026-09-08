@@ -1,4 +1,4 @@
-import type { PeticionCombate } from '../contratos/tipos'
+import type { DadosApi, PeticionCombate } from '../contratos/tipos'
 import type { PerfilAtacante } from '../componentes/PanelAtacante'
 import type { PerfilDefensor } from '../componentes/PanelDefensor'
 
@@ -21,10 +21,8 @@ export function mapearPeticion(atacante: PerfilAtacante, defensor: PerfilDefenso
     errores.push('Selecciona IMPACTA A.')
   }
 
-  const cantidadAtaques = parsearEntero(atacante.cantidadAtaques)
-  if (cantidadAtaques === null || cantidadAtaques < 1) {
-    errores.push('La cantidad de ataques debe ser al menos 1.')
-  }
+  const ataques = mapearFuenteAtaques(atacante, errores)
+  const danio = mapearFuenteDanio(atacante, errores)
 
   const fuerza = parsearEntero(atacante.fuerza)
   if (fuerza === null || fuerza < 1) {
@@ -34,11 +32,6 @@ export function mapearPeticion(atacante: PerfilAtacante, defensor: PerfilDefenso
   const penetracionArmadura = parsearEntero(atacante.penetracionArmadura)
   if (penetracionArmadura === null) {
     errores.push('La penetración de armadura no es válida.')
-  }
-
-  const danio = parsearEntero(atacante.danio)
-  if (danio === null || danio < 1) {
-    errores.push('El daño debe ser al menos 1.')
   }
 
   const salvacion = parsearValor(defensor.salvacion)
@@ -85,10 +78,12 @@ export function mapearPeticion(atacante: PerfilAtacante, defensor: PerfilDefenso
       repiteUnoParaHerir: atacante.habilidades.repiteUnoParaHerir,
     },
     arma: {
-      cantidadAtaques: cantidadAtaques!,
+      cantidadAtaques: ataques.cantidadAtaques,
+      ataquesAleatorios: ataques.dados,
       fuerza: fuerza!,
       penetracionArmadura: penetracionArmadura!,
-      danio: danio!,
+      danio: danio.cantidadDanio,
+      danioAleatorio: danio.dados,
       repetirTiradaHerida: atacante.habilidades.repetirTiradaHerida,
       habilidades: {
         lanza: atacante.habilidades.lance,
@@ -116,6 +111,75 @@ export function mapearPeticion(atacante: PerfilAtacante, defensor: PerfilDefenso
   }
 
   return { peticion, errores: [] }
+}
+
+interface FuenteAtaques {
+  cantidadAtaques: number
+  dados: DadosApi | null
+}
+
+interface FuenteDanio {
+  cantidadDanio: number
+  dados: DadosApi | null
+}
+
+function mapearFuenteAtaques(atacante: PerfilAtacante, errores: string[]): FuenteAtaques {
+  if (atacante.habilidades.ataquesAleatorios) {
+    const dados = parsearExpresionDados(atacante.cantidadAtaques)
+    if (dados === null) {
+      errores.push('La cantidad de ataques no es una expresión de dados válida (ej. D6, 2D3, D6+1).')
+      return { cantidadAtaques: 0, dados: null }
+    }
+    return { cantidadAtaques: 0, dados }
+  }
+
+  const cantidadAtaques = parsearEntero(atacante.cantidadAtaques)
+  if (cantidadAtaques === null || cantidadAtaques < 1) {
+    errores.push('La cantidad de ataques debe ser al menos 1.')
+    return { cantidadAtaques: 0, dados: null }
+  }
+
+  return { cantidadAtaques, dados: null }
+}
+
+function mapearFuenteDanio(atacante: PerfilAtacante, errores: string[]): FuenteDanio {
+  if (atacante.habilidades.danioAleatorio) {
+    const dados = parsearExpresionDados(atacante.danio)
+    if (dados === null) {
+      errores.push('El daño no es una expresión de dados válida (ej. D6, 2D3, D6+1).')
+      return { cantidadDanio: 0, dados: null }
+    }
+    return { cantidadDanio: 0, dados }
+  }
+
+  const cantidadDanio = parsearEntero(atacante.danio)
+  if (cantidadDanio === null || cantidadDanio < 1) {
+    errores.push('El daño debe ser al menos 1.')
+    return { cantidadDanio: 0, dados: null }
+  }
+
+  return { cantidadDanio, dados: null }
+}
+
+/**
+ * Interpreta una expresión de dados como "D6", "2D3", "D6+1" o "D6-1".
+ * Devuelve null si no es válida.
+ */
+function parsearExpresionDados(texto: string): DadosApi | null {
+  const coincidencia = /^(\d*)[Dd](\d+)([+-]\d+)?$/.exec(texto.trim())
+  if (coincidencia === null) {
+    return null
+  }
+
+  const cantidadDados = coincidencia[1] === '' ? 1 : Number.parseInt(coincidencia[1], 10)
+  const caras = Number.parseInt(coincidencia[2], 10)
+  const modificador = coincidencia[3] === undefined ? 0 : Number.parseInt(coincidencia[3], 10)
+
+  if (cantidadDados < 1 || caras < 2 || caras > 6) {
+    return null
+  }
+
+  return { cantidadDados, caras, modificador }
 }
 
 /**

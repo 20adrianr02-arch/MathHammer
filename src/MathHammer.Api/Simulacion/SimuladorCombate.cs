@@ -16,6 +16,7 @@ public static class SimuladorCombate
     {
         ValidarPerfil(perfil);
 
+        int danioPotencial = 0;
         int heridasInfligidas = 0;
         int miniaturasDestruidas = 0;
         int miniaturasVivas = perfil.CantidadMiniaturas;
@@ -35,9 +36,13 @@ public static class SimuladorCombate
         TipoRepeticion repeticionImpacto = perfil.RepiteParaImpactar ? TipoRepeticion.Todas : TipoRepeticion.Ninguna;
         TipoRepeticion repeticionHerida = ObtenerRepeticionHerida(perfil);
 
-        for (int ataque = 0; ataque < perfil.CantidadAtaques && miniaturasVivas > 0; ataque++)
+        int cantidadAtaques = perfil.AtaquesAleatorios is { } ataquesAleatorios
+            ? ResolverDados.Resolver(ataquesAleatorios, generador)
+            : perfil.CantidadAtaques;
+
+        for (int ataque = 0; ataque < cantidadAtaques; ataque++)
         {
-            int rollImpacto = TirarConRepeticion(generador, perfil.ImpactaA, repeticionImpacto);
+            int rollImpacto = TirarConRepeticion(generador, perfil.ImpactaA, modificadorImpacto, repeticionImpacto);
 
             if (!EsExitoConModificador(rollImpacto, perfil.ImpactaA, modificadorImpacto))
             {
@@ -53,9 +58,9 @@ public static class SimuladorCombate
             int heridasNormales = (impactoLetal ? 0 : 1) + impactosExtra;
             int heridasAutomaticas = impactoLetal ? 1 : 0;
 
-            for (int indice = 0; indice < heridasNormales && miniaturasVivas > 0; indice++)
+            for (int indice = 0; indice < heridasNormales; indice++)
             {
-                int rollHerida = TirarConRepeticion(generador, tiradaHerida, repeticionHerida);
+                int rollHerida = TirarConRepeticion(generador, tiradaHerida, modificadorHerida, repeticionHerida);
 
                 if (!EsExitoConModificador(rollHerida, tiradaHerida, modificadorHerida))
                 {
@@ -71,6 +76,7 @@ public static class SimuladorCombate
                     generador,
                     tiradaSalvacion,
                     devastador,
+                    ref danioPotencial,
                     ref heridasInfligidas,
                     ref miniaturasDestruidas,
                     ref miniaturasVivas,
@@ -78,7 +84,7 @@ public static class SimuladorCombate
                     ref salvacionesLogradas);
             }
 
-            for (int indice = 0; indice < heridasAutomaticas && miniaturasVivas > 0; indice++)
+            for (int indice = 0; indice < heridasAutomaticas; indice++)
             {
                 heridasLogradas++;
                 AplicarHerida(
@@ -86,6 +92,7 @@ public static class SimuladorCombate
                     generador,
                     tiradaSalvacion,
                     esDevastador: false,
+                    ref danioPotencial,
                     ref heridasInfligidas,
                     ref miniaturasDestruidas,
                     ref miniaturasVivas,
@@ -95,6 +102,7 @@ public static class SimuladorCombate
         }
 
         return new ResultadoIteracion(
+            danioPotencial,
             heridasInfligidas,
             miniaturasDestruidas,
             impactosLogrados,
@@ -137,6 +145,7 @@ public static class SimuladorCombate
         GeneradorAleatorio generador,
         int tiradaSalvacion,
         bool esDevastador,
+        ref int danioPotencial,
         ref int heridasInfligidas,
         ref int miniaturasDestruidas,
         ref int miniaturasVivas,
@@ -153,9 +162,13 @@ public static class SimuladorCombate
             }
         }
 
-        int danioEfectivo = perfil.ReduccionDanio
-            ? Math.Max(1, perfil.Danio - 1)
+        int danioBruto = perfil.DanioAleatorio is { } danioAleatorio
+            ? ResolverDados.Resolver(danioAleatorio, generador)
             : perfil.Danio;
+
+        int danioEfectivo = perfil.ReduccionDanio
+            ? Math.Max(1, danioBruto - 1)
+            : danioBruto;
 
         if (perfil.SensacionDolor is int sensacionDolor)
         {
@@ -169,6 +182,13 @@ public static class SimuladorCombate
             }
 
             danioEfectivo = danioInfligido;
+        }
+
+        danioPotencial += danioEfectivo;
+
+        if (miniaturasVivas == 0)
+        {
+            return;
         }
 
         int aplicado = Math.Min(danioEfectivo, heridasRestantesModelo);
@@ -198,13 +218,13 @@ public static class SimuladorCombate
         return TipoRepeticion.Ninguna;
     }
 
-    private static int TirarConRepeticion(GeneradorAleatorio generador, int requerido, TipoRepeticion tipoRepeticion)
+    private static int TirarConRepeticion(GeneradorAleatorio generador, int requerido, int modificador, TipoRepeticion tipoRepeticion)
     {
         int roll = generador.LanzarD6();
 
         bool debeRepetir = tipoRepeticion switch
         {
-            TipoRepeticion.Todas => roll < requerido,
+            TipoRepeticion.Todas => !EsExitoConModificador(roll, requerido, modificador),
             TipoRepeticion.Unos => roll == 1,
             _ => false,
         };
@@ -239,14 +259,17 @@ public static class SimuladorCombate
             throw new ArgumentOutOfRangeException(nameof(perfil.CantidadAtaques), "La cantidad de ataques no puede ser negativa.");
         }
 
+        ValidarDados(perfil.AtaquesAleatorios, "ataquesAleatorios");
+        ValidarDados(perfil.DanioAleatorio, "danioAleatorio");
+
         if (perfil.ImpactaA < 2 || perfil.ImpactaA > 6)
         {
             throw new ArgumentOutOfRangeException(nameof(perfil.ImpactaA), "La habilidad de impacto debe estar entre 2 y 6.");
         }
 
-        if (perfil.Danio < 1)
+        if (perfil.DanioAleatorio is null && perfil.Danio < 1)
         {
-            throw new ArgumentOutOfRangeException(nameof(perfil.Danio), "El daño debe ser al menos 1.");
+            throw new ArgumentOutOfRangeException(nameof(perfil.Danio), "El daño debe ser al menos 1 o indicarse como dado aleatorio.");
         }
 
         if (perfil.GolpesSostenidos < 0)
@@ -267,6 +290,24 @@ public static class SimuladorCombate
         if (perfil.CantidadMiniaturas < 1)
         {
             throw new ArgumentOutOfRangeException(nameof(perfil.CantidadMiniaturas), "La cantidad de miniaturas debe ser al menos 1.");
+        }
+    }
+
+    private static void ValidarDados(Contratos.DadosAleatorios? dados, string nombre)
+    {
+        if (dados is null)
+        {
+            return;
+        }
+
+        if (dados.CantidadDados < 1)
+        {
+            throw new ArgumentOutOfRangeException(nombre, "La cantidad de dados debe ser al menos 1.");
+        }
+
+        if (dados.Caras < 2 || dados.Caras > 6)
+        {
+            throw new ArgumentOutOfRangeException(nombre, "Las caras del dado deben estar entre 2 y 6.");
         }
     }
 

@@ -36,11 +36,11 @@
 ## Estado actual
 
 - **Estado:** Completado
-- **Última actualización:** 2026-08-29 19:00 CEST
-- **Tarea:** Fases A (seguridad/calidad) y B (CI/CD, Docker, README) del plan de producción.
-- **Objetivo inmediato:** Rate limiter, 500 sin fuga, CORS por config, health, Swagger, CI, Dockerfiles, compose, render.yaml y README.
-- **Bloqueos:** Docker Desktop no está instalado (verificación del compose pendiente).
-- **Próxima acción:** Instalar Docker para validar compose, desplegar en Render y abordar la app móvil.
+- **Última actualización:** 2026-09-08 21:33 CEST
+- **Tarea:** Fix en el simulador: los impactos/heridas/salvaciones ya no dependen de la cantidad de miniaturas (se resuelven todos los ataques; el daño sobrante se descarta).
+- **Objetivo inmediato:** Cerrar apartados 1 (Docker/Render, verificación pendiente) y 2 (app Flutter).
+- **Bloqueos:** Docker Desktop no instalado (apartado 1 = documentación); Flutter/Android SDK no instalados (apartado 2).
+- **Próxima acción:** Apartado 1 (RUNBOOK `docs/despliegue.md`) y apartado 2 (instalar Flutter y crear la app).
 
 ## Contexto del proyecto
 
@@ -75,7 +75,7 @@
 | `README.md` | Presentación inicial y estado del proyecto | Completado | 2026-08-29 19:00 CEST |
 | `LICENSE` | Licencia MIT del proyecto | Existente | 2026-08-26 22:04 CEST |
 | `BACKLOG.md` | Historias de usuario del proyecto | Completado | 2026-08-26 22:50 CEST |
-| `docs/contrato-api.md` | Contrato JSON de entrada y salida de la API de combate | Completado | 2026-08-29 17:30 CEST |
+| `docs/contrato-api.md` | Contrato JSON de entrada y salida de la API de combate | Completado | 2026-09-08 14:19 CEST |
 | `.github/workflows/ci.yml` | CI: build y test de backend y frontend | Completado | 2026-08-29 19:00 CEST |
 | `docker-compose.yml` | Orquestación de API y web | Completado | 2026-08-29 19:00 CEST |
 | `src/MathHammer.Api/Dockerfile` | Imagen de la API | Completado | 2026-08-29 19:00 CEST |
@@ -107,12 +107,14 @@
 | `src/MathHammer.Api/Contratos/ResultadoCombate.cs` | DTO respuesta de combate | Completado | 2026-08-29 16:00 CEST |
 | `src/MathHammer.Api/Contratos/ResumenSimulacion.cs` | DTO resumen de la simulación | Completado | 2026-08-29 16:00 CEST |
 | `src/MathHammer.Api/Contratos/ValidadorPeticion.cs` | Validación fail-fast de la petición | Completado | 2026-08-29 16:00 CEST |
-| `src/MathHammer.Api/Contratos/MapeadorPeticion.cs` | Mapeo petición → perfil base | Completado | 2026-08-29 16:00 CEST |
+| `src/MathHammer.Api/Contratos/MapeadorPeticion.cs` | Mapeo petición → perfil base | Completado | 2026-09-08 14:19 CEST |
+| `src/MathHammer.Api/Contratos/DadosAleatorios.cs` | Tipo `DadosAleatorios` (cantidad, caras, modificador) | Completado | 2026-09-08 14:19 CEST |
 | `src/MathHammer.Api/Simulacion/GeneradorAleatorio.cs` | Generador aleatorio con semilla reproducible | Completado | 2026-08-29 14:45 CEST |
 | `src/MathHammer.Api/Simulacion/PerfilCombateBase.cs` | Perfil de combate base (sin habilidades) | Eliminado | 2026-08-29 17:30 CEST |
 | `src/MathHammer.Api/Simulacion/PerfilCombate.cs` | Perfil completo con habilidades | Completado | 2026-08-29 17:30 CEST |
 | `src/MathHammer.Api/Simulacion/ResultadoIteracion.cs` | Heridas infligidas y miniaturas destruidas por iteración | Completado | 2026-08-29 14:45 CEST |
-| `src/MathHammer.Api/Simulacion/SimuladorCombate.cs` | Simulador Monte Carlo de la secuencia base | Completado | 2026-08-29 14:45 CEST |
+| `src/MathHammer.Api/Simulacion/SimuladorCombate.cs` | Simulador Monte Carlo de la secuencia base | Completado | 2026-09-08 14:19 CEST |
+| `src/MathHammer.Api/Simulacion/ResolverDados.cs` | Resolución de una expresión de dados (mín. 1) | Completado | 2026-09-08 14:19 CEST |
 | `src/MathHammer.Api/Simulacion/ResultadoMetricas.cs` | Las 8 métricas del panel de resultados | Completado | 2026-08-29 15:10 CEST |
 | `src/MathHammer.Api/Simulacion/CalculadoraMetricas.cs` | Medios analíticos, letalidad y percentiles | Completado | 2026-08-29 15:10 CEST |
 | `tests/MathHammer.Pruebas/MathHammer.Pruebas.csproj` | Proyecto xUnit + FluentAssertions | Completado | 2026-08-28 12:00 CEST |
@@ -123,6 +125,7 @@
 | `tests/MathHammer.Pruebas/Simulacion/GeneradorAleatorioPruebas.cs` | Pruebas de semilla y rango del dado | Completado | 2026-08-29 14:45 CEST |
 | `tests/MathHammer.Pruebas/Simulacion/SimuladorCombatePruebas.cs` | Pruebas de convergencia, no-spillover y reproducibilidad | Completado | 2026-08-29 14:45 CEST |
 | `tests/MathHammer.Pruebas/Simulacion/CalculadoraMetricasPruebas.cs` | Pruebas de las métricas del panel | Completado | 2026-08-29 15:10 CEST |
+| `tests/MathHammer.Pruebas/Simulacion/ResolverDadosPruebas.cs` | Pruebas de la resolución de dados aleatorios | Completado | 2026-09-08 14:19 CEST |
 | `tests/MathHammer.Pruebas/Contratos/MapeadorPeticionPruebas.cs` | Pruebas del mapeo petición → perfil | Completado | 2026-08-29 16:00 CEST |
 | `tests/MathHammer.Pruebas/Contratos/ValidadorPeticionPruebas.cs` | Pruebas de validación de la petición | Completado | 2026-08-29 16:00 CEST |
 | `frontend/MathHammer.Web/package.json` | Dependencias y scripts del proyecto web | Completado | 2026-08-27 00:28 CEST |
@@ -141,11 +144,14 @@
 | `frontend/MathHammer.Web/src/componentes/SelectorTema.tsx` | Selector de temas de color dinámicos | Completado | 2026-08-28 10:50 CEST |
 | `frontend/MathHammer.Web/src/estilos.css` | Estilos visuales grimdark responsive | Completado | 2026-08-29 18:00 CEST |
 | `frontend/MathHammer.Web/src/vite-env.d.ts` | Tipos de entorno de Vite | Completado | 2026-08-27 00:28 CEST |
-| `frontend/MathHammer.Web/src/contratos/tipos.ts` | Tipos TS del contrato de la API | Completado | 2026-08-29 18:00 CEST |
-| `frontend/MathHammer.Web/src/servicios/mapearPeticion.ts` | Mapeo y validación del formulario a la API | Completado | 2026-08-29 18:00 CEST |
+| `frontend/MathHammer.Web/src/contratos/tipos.ts` | Tipos TS del contrato de la API | Completado | 2026-09-08 14:19 CEST |
+| `frontend/MathHammer.Web/src/componentes/ControlesCombate.tsx` | Controles visuales reutilizables (incl. `CampoConDados`) | Completado | 2026-09-08 14:19 CEST |
+| `frontend/MathHammer.Web/src/componentes/PanelAtacante.tsx` | Panel interactivo del atacante | Completado | 2026-09-08 14:19 CEST |
+| `frontend/MathHammer.Web/src/Aplicacion.tsx` | Composición de la maqueta principal | Completado | 2026-09-08 14:19 CEST |
+| `frontend/MathHammer.Web/src/servicios/mapearPeticion.ts` | Mapeo y validación del formulario a la API | Completado | 2026-09-08 14:19 CEST |
+| `frontend/MathHammer.Web/src/servicios/mapearPeticion.test.ts` | Tests del mapeo | Completado | 2026-09-08 14:19 CEST |
 | `frontend/MathHammer.Web/src/servicios/clienteApi.ts` | Cliente HTTP del endpoint de simulación | Completado | 2026-08-29 18:00 CEST |
 | `frontend/MathHammer.Web/src/hooks/usarCalculoCombate.ts` | Hook de estado de cálculo | Completado | 2026-08-29 18:00 CEST |
-| `frontend/MathHammer.Web/src/servicios/mapearPeticion.test.ts` | Tests del mapeo | Completado | 2026-08-29 18:00 CEST |
 | `frontend/MathHammer.Web/src/componentes/PanelResultados.test.tsx` | Tests de render de resultados | Completado | 2026-08-29 18:00 CEST |
 | `mobile/MathHammer.App/lib/` | Futura ubicación del código fuente Flutter | Completado | 2026-08-26 23:10 CEST |
 | `mobile/MathHammer.App/test/` | Futura ubicación de pruebas Flutter | Completado | 2026-08-26 23:10 CEST |
@@ -166,6 +172,9 @@
 | 2026-08-26 22:30 CEST | Guardar la API key de Context7 en `.opencode/context7.key` e inyectarla con `{file:...}`. | Evita exponer el secreto en `opencode.json` o en variables de entorno del sistema; queda excluido por `.gitignore`. | El header usa `CONTEXT7_API_KEY` leído del archivo local; el secreto no se versiona. |
 | 2026-08-26 22:35 CEST | Mover `opencode.json` a `.opencode/opencode.json` y ajustar la ruta a `{file:context7.key}`. | Centraliza la configuración en `.opencode/`; `{file:...}` resuelve rutas relativas al directorio del config. | La referencia quedó correcta; verificado con `curl` contra el MCP (HTTP 200, autenticación válida). |
 | 2026-08-26 22:39 CEST | Revertir la ubicación del config a la raíz: `opencode.json` no se carga desde `.opencode/`. | La documentación oficial de opencode solo carga el config de proyecto desde `opencode.json` en la raíz; `.opencode/` es para agents/commands/plugins. | El MCP y `default_agent` volvieron a la ubicación soportada; la clave sigue en `.opencode/context7.key` vía `{file:.opencode/context7.key}`. |
+| 2026-09-08 14:19 CEST | Dados aleatorios con **fuente única excluyente**: por atributo (ataques/daño) debe venir o el valor fijo (`>0`) o `Dados`, nunca ambos ni ninguno (422). | El contrato v1.3 ya documentaba `ataquesAleatorios`/`danioAleatorio`, pero el código no los implementaba; se alinea código↔contrato. | `ValidadorPeticion` y el mapeo del front aplican la exclusión; los payloads de la web envían `null` explícito en modo fijo. |
+| 2026-09-08 14:19 CEST | Representar el dado en JSON con `cantidadDados`, `caras` y `modificador` (en lugar de `dados`). | Evita la colisión C# de propiedad con el nombre de su tipo y mantiene el estilo descriptivo del proyecto. | Contrato v1.4; el tipo backend es `DadosAleatorios` con esas tres propiedades. |
+| 2026-09-08 14:19 CEST | UI del dado como campo de texto + casilla "Dados (D3/D6)": el mismo campo alterna entre número fijo y expresión (`D3`, `D6`, `2D3`, `D6+1`…). | El usuario pidió texto plano con casilla adyacente en lugar de selectores de dados. | Nuevo componente `CampoConDados` reutilizado en Ataques y Daño; la expresión se parsea en el mapeo. |
 
 ## Registro de pasos
 
@@ -220,6 +229,10 @@
 | 2026-08-29 17:30 CEST | Módulo 6: habilidades ofensivas y defensivas en el simulador, `PerfilCombate`, métricas por medias de simulación, eliminación de `repiteParaHerir` y `repetirTiradaSalvacion`, FNP con desplegable en el front y contrato v1.3. | `src/MathHammer.Api/Simulacion/*`, `src/MathHammer.Api/Contratos/*`, `src/MathHammer.Api/Program.cs`, `tests/MathHammer.Pruebas/*`, `frontend/MathHammer.Web/src/*`, `docs/contrato-api.md`, `CONTEXT.md` | Completado; 78 pruebas en verde y `npm run build` correcto. |
 | 2026-08-29 18:00 CEST | Conexión frontend-backend: tipos de la API, mapeo/validación del formulario, cliente HTTP, hook de cálculo, `PanelResultados` con métricas reales y Vitest + Testing Library. | `frontend/MathHammer.Web/src/contratos/tipos.ts`, `frontend/MathHammer.Web/src/servicios/*`, `frontend/MathHammer.Web/src/hooks/usarCalculoCombate.ts`, `frontend/MathHammer.Web/src/componentes/PanelResultados.tsx`, `frontend/MathHammer.Web/src/Aplicacion.tsx`, `frontend/MathHammer.Web/vite.config.ts`, `frontend/MathHammer.Web/package.json`, `CONTEXT.md` | Completado; 9 tests de front en verde, `npm run build` correcto y endpoint verificado (200). |
 | 2026-08-29 19:00 CEST | Fases A/B: rate limiter (429), 500 sin filtrar detalle + logging, CORS desde config, health check, Swagger; CI en GitHub Actions, Dockerfiles, compose, nginx, render.yaml y README reescrito. | `src/MathHammer.Api/Program.cs`, `src/MathHammer.Api/appsettings.json`, `src/MathHammer.Api/MathHammer.Api.csproj`, `.github/workflows/ci.yml`, `docker-compose.yml`, `Dockerfile`s, `nginx.conf`, `render.yaml`, `README.md`, `CONTEXT.md` | Completado; 78 tests backend y 9 frontend en verde, `/health` y `/swagger` responden 200. |
+| 2026-09-08 14:19 CEST | Apartado 3: dados aleatorios (ataques y daño) con fuente única. Nuevo `DadosAleatorios` y `ResolverDados`, uso en el simulador, validación/mapeo, contrato v1.4, componente `CampoConDados` en el front y parseo de expresiones `D3/D6/2D3/D6+1`. | `src/MathHammer.Api/Contratos/DadosAleatorios.cs`, `PerfilArma.cs`, `PerfilCombate.cs`, `ValidadorPeticion.cs`, `MapeadorPeticion.cs`, `src/MathHammer.Api/Simulacion/ResolverDados.cs`, `SimuladorCombate.cs`, `docs/contrato-api.md`, `frontend/.../tipos.ts`, `ControlesCombate.tsx`, `PanelAtacante.tsx`, `Aplicacion.tsx`, `mapearPeticion.ts`, `estilos.css`, pruebas backend y frontend, `README.md`, `CONTEXT.md` | Completado; 92 tests backend y 12 frontend en verde, `npm run build` correcto. |
+| 2026-09-08 21:33 CEST | Fix simulador: eliminadas las condiciones `miniaturasVivas > 0` de los bucles de ataque/herida/salvación; el daño sobrante se descarta en `AplicarHerida` si la unidad ya está destruida. Impactos/heridas/salvaciones pasan a depender solo de los ataques declarados (fiel a WH40k 10.ª ed). | `src/MathHammer.Api/Simulacion/SimuladorCombate.cs`, `tests/MathHammer.Pruebas/Simulacion/SimuladorCombatePruebas.cs`, `CONTEXT.md` | Completado; 93 tests backend en verde (nuevo test de regresión `Impactos_NoDependenDeLaCantidadDeMiniaturas`). |
+| 2026-09-08 21:44 CEST | Daño potencial: nuevo `DanioPotencial` en `ResultadoIteracion`; `danioMedioEsperado` y percentiles muestran el daño potencial del ataque (sin acotar), mientras que `miniaturasEliminadas` y `probabilidadMatarUnidad` se acotan por la unidad. | `Simulacion/ResultadoIteracion.cs`, `Simulacion/SimuladorCombate.cs`, `Simulacion/CalculadoraMetricas.cs`, `docs/contrato-api.md`, `tests/.../CalculadoraMetricasPruebas.cs`, `SimuladorCombatePruebas.cs` | Completado; 94 tests en verde. |
+| 2026-09-08 21:44 CEST | Fix fidelidad: las repeticiones de dados fallidos (`repiteParaImpactar`, `Twin-linked`) relanzan todos los dados que fallan **tras el modificador** (antes solo `roll < requerido`). | `Simulacion/SimuladorCombate.cs`, `tests/.../SimuladorCombatePruebas.cs` | Completado; 95 tests en verde (nuevo test `RepiteParaImpactar_ConPenalizacion_RelanzaTodosLosFallidos`). |
 
 ## Verificaciones realizadas
 
@@ -242,17 +255,19 @@
 - Temas: rojo código, amarillo imperial, azul ultramar y verde tóxico, aplicados mediante variables CSS.
 - Resultados: panel de tarjetas con encabezado `RESULTADOS DE COMBATE` y legibilidad en blanco.
 - Servidor local: Vite responde en `http://localhost:5173` con `HTTP 200`.
-- Backend .NET: solución compilada con SDK `9.0.203`; `dotnet build` sin errores y `dotnet test` con 78 pruebas en verde.
-- Contrato API: `docs/contrato-api.md` v1.3, con 8 métricas de respuesta, habilidades aplicadas y sin histogramas.
+- Backend .NET: solución compilada con SDK `9.0.203`; `dotnet build` sin errores y `dotnet test` con 92 pruebas en verde.
+- Contrato API: `docs/contrato-api.md` v1.4, con 8 métricas de respuesta, habilidades aplicadas, dados aleatorios (fuente única) y sin histogramas.
+- Dados aleatorios: fuente única validada (422 si ambos o ninguno), convergencia Monte Carlo de ataques `D6` y daño `D6`, `ResolverDados` con mínimo 1 y reproducible por semilla.
+- Frontend: `CampoConDados` (texto plano + casilla "Dados (D3/D6)"), parseo de expresiones `D3/D6/2D3/D6+1`, 12 tests en verde y `npm run build` correcto.
 
 ## Traspaso a la siguiente sesión
 
-- **Estado al cerrar:** Título con `Cinzel` e interfaz con `Inter` aplicados y servidos en el puerto `5173`; cambios sin commit.
-- **Última tarea realizada:** Estilo `Cinzel`/`Inter` y fondo carbón con degradado rojo.
-- **Archivos modificados en esta sesión:** `CONTEXT.md` y `frontend/MathHammer.Web/src/estilos.css`.
-- **Decisiones pendientes:** Conectar los resultados al backend cuando exista; añadir el valor numérico de FNP cuando el selector esté disponible en el frontend.
-- **Bloqueos:** Ninguno conocido.
-- **Siguiente paso recomendado:** Revisar visualmente los cuatro temas y preparar la implementación del backend conforme al contrato `1.1`.
+- **Estado al cerrar:** Fix del simulador aplicado (impactos independientes de las miniaturas); 93 tests backend y 12 frontend en verde; cambios sin commit.
+- **Última tarea realizada:** Corregir el simulador para resolver todos los ataques y descartar el daño sobrante (sin spillover), conforme a WH40k 10.ª ed.
+- **Archivos modificados en esta sesión:** backend `Simulacion/SimuladorCombate.cs`, `tests/.../SimuladorCombatePruebas.cs`, `frontend/.../index.html`, `Aplicacion.tsx`, `estilos.css`, `CONTEXT.md`, `render.yaml` (subido).
+- **Decisiones pendientes:** Ninguna sobre el apartado 3.
+- **Bloqueos:** Docker Desktop no instalado (apartado 1); Flutter/Android SDK no instalados (apartado 2).
+- **Siguiente paso recomendado:** Apartado 1 (auditar Dockerfiles/compose/render.yaml y crear `docs/despliegue.md`) y apartado 2 (instalar Flutter en WSL y crear la app).
 
 ## Historial resumido
 

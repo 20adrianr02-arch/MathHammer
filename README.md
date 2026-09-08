@@ -16,6 +16,7 @@ juego.
 - Habilidades ofensivas: `Lethal Hits`, `Sustained Hits X`, `Devastating Wounds`,
   `Lance`, `Twin-linked` y repeticiones.
 - Habilidades defensivas: FNP, `-1 al daño`, `-1 al impactar`, `-1 al herir`.
+- Ataques y daño fijos o aleatorios mediante dados (`D3`, `D6`, `2D3`, `D6+1`…).
 - Métricas: impactos/heridas/salvaciones esperadas, daño medio, miniaturas
   eliminadas, probabilidad de aniquilación y percentiles P25/P75.
 - Interfaz web oscura de temática táctica con selector de temas dinámicos.
@@ -50,7 +51,7 @@ ASP.NET Core Minimal API (C# / .NET 9)
 src/MathHammer.Api/          Backend (Contratos, Reglas, Simulacion)
 tests/MathHammer.Pruebas/    Pruebas unitarias del backend
 frontend/MathHammer.Web/     Aplicación web
-docs/contrato-api.md         Contrato de datos de la API (v1.3)
+docs/contrato-api.md         Contrato de datos de la API (v1.4)
 ```
 
 ## Ejecución en desarrollo

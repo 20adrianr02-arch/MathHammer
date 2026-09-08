@@ -1,6 +1,6 @@
 # Contrato de datos de la API
 
-Versión: `1.3`
+Versión: `1.4`
 
 Este documento define el contrato JSON compartido por el backend y el
 frontend de MathHammer. Los nombres del contrato están en español y usan
@@ -133,21 +133,32 @@ Representa una expresión de dados como `D3`, `D6`, `D6+1` o `2D6`.
 
 ```json
 {
-  "dados": 1,
+  "cantidadDados": 1,
   "caras": 6,
   "modificador": 1
 }
 ```
 
-Sus campos son enteros positivos, salvo `modificador`, que puede ser
-negativo. `dados` debe ser mayor que `0` y `caras` debe estar entre `2` y `6`.
+Sus campos:
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `cantidadDados` | entero | Número de dados, mayor que `0`. |
+| `caras` | entero | Caras de cada dado, entre `2` y `6`. |
+| `modificador` | entero | Sumando aplicado al total, puede ser negativo. |
+
+El resultado es la suma de lanzar `cantidadDados` dados de `caras` caras más el
+`modificador`, con un mínimo de `1`.
 
 ### Reglas de nulabilidad y exclusión
 
 - `ataquesAleatorios` y `danioAleatorio` deben ser `null` cuando se usa el
   valor fijo correspondiente.
-- Si se proporciona un dado aleatorio, sustituye al valor fijo del mismo
-  campo; el backend debe rechazar una petición que no tenga una fuente válida.
+- Para cada atributo (ataques y daño) debe indicarse exactamente una fuente:
+  el valor fijo (mayor que `0`) o el dado aleatorio (`Dados`). Si se envían
+  ambos, o ninguno, el backend responde `422`.
+- Si se proporciona un dado aleatorio, el valor fijo del mismo campo debe
+  ser `0`.
 - `salvacionInvulnerable` y `sensacionDolor` usan `null` para indicar que la
   regla no existe.
 - `repiteParaImpactar` indica repetición completa de las tiradas de impacto
@@ -193,10 +204,10 @@ negativo. `dados` debe ser mayor que `0` y `caras` debe estar entre `2` y `6`.
 | `heridasEsperadas` | decimal | Media esperada de heridas (cálculo analítico). |
 | `salvacionesEnemigo` | decimal | Media esperada de salvaciones exitosas del defensor. |
 | `probabilidadMatarUnidad` | decimal | Proporción de iteraciones con toda la unidad destruida. |
-| `miniaturasEliminadas` | decimal | Media de miniaturas destruidas por iteración. |
-| `danioMedioEsperado` | decimal | Media de heridas aplicadas a la unidad por iteración. |
-| `percentil25` | decimal | Percentil 25 del daño con interpolación lineal. |
-| `percentil75` | decimal | Percentil 75 del daño con interpolación lineal. |
+| `miniaturasEliminadas` | decimal | Media de miniaturas destruidas por iteración (acotada por la unidad). |
+| `danioMedioEsperado` | decimal | Daño potencial medio del ataque, **sin acotar** por el tamaño de la unidad. |
+| `percentil25` | decimal | Percentil 25 del daño potencial con interpolación lineal. |
+| `percentil75` | decimal | Percentil 75 del daño potencial con interpolación lineal. |
 
 Todas las probabilidades se expresan como valores entre `0.0` y `1.0`, no como
 porcentajes enteros.
@@ -208,9 +219,12 @@ porcentajes enteros.
 | `iteracionesEjecutadas` | entero | Número de iteraciones ejecutadas. |
 | `duracionMilisegundos` | entero | Duración de la simulación en milisegundos. |
 
-El daño de cada iteración se limita a las heridas que realmente puede perder
-la unidad. El exceso de daño de un ataque que destruye una miniatura no se
-transfiere a la siguiente miniatura.
+Todos los ataques se resuelven siempre (impactos, heridas y salvaciones no
+dependen del tamaño de la unidad). El daño medio y los percentiles muestran el
+daño potencial del ataque sin acotar. Las métricas de destrucción
+(`miniaturasEliminadas` y `probabilidadMatarUnidad`) sí se acotan por la unidad:
+el exceso de daño de un ataque que destruye una miniatura no se transfiere a la
+siguiente miniatura (sin spillover).
 
 ### Reglas de combate que debe respetar el servidor
 
@@ -233,6 +247,10 @@ transfiere a la siguiente miniatura.
   mínimo de `1` punto de daño.
 - La salvación invulnerable no se modifica por AP.
 - FNP se resuelve individualmente por cada punto de daño.
+- La cantidad de ataques aleatorios se resuelve una vez por iteración, antes de
+  procesar los ataques.
+- El daño aleatorio se resuelve por cada herida no salvada, antes de aplicar
+  `reduccionDanio` y FNP.
 - El daño se asigna primero a miniaturas previamente heridas y no existe
   spillover.
 

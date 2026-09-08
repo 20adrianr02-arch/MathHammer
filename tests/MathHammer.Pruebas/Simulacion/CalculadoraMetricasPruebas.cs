@@ -10,8 +10,8 @@ public class CalculadoraMetricasPruebas
     {
         ResultadoIteracion[] resultados =
         [
-            new ResultadoIteracion(2, 0, 8, 4, 2),
-            new ResultadoIteracion(4, 1, 6, 2, 0),
+            new ResultadoIteracion(2, 0, 0, 8, 4, 2),
+            new ResultadoIteracion(4, 0, 1, 6, 2, 0),
         ];
 
         var perfil = CrearPerfil(cantidadMiniaturas: 2);
@@ -24,13 +24,13 @@ public class CalculadoraMetricasPruebas
     }
 
     [Fact]
-    public void Calcular_DanioMedio_EsLaMediaDeHeridasInfligidas()
+    public void Calcular_DanioMedio_EsLaMediaDelDanioPotencial()
     {
         ResultadoIteracion[] resultados =
         [
-            new ResultadoIteracion(2, 0, 4, 2, 0),
-            new ResultadoIteracion(4, 0, 4, 2, 0),
-            new ResultadoIteracion(6, 0, 4, 2, 0),
+            new ResultadoIteracion(2, 0, 0, 4, 2, 0),
+            new ResultadoIteracion(4, 0, 0, 4, 2, 0),
+            new ResultadoIteracion(6, 0, 0, 4, 2, 0),
         ];
 
         var perfil = CrearPerfil(cantidadMiniaturas: 3);
@@ -45,9 +45,9 @@ public class CalculadoraMetricasPruebas
     {
         ResultadoIteracion[] resultados =
         [
-            new ResultadoIteracion(2, 1, 0, 0, 0),
-            new ResultadoIteracion(4, 2, 0, 0, 0),
-            new ResultadoIteracion(6, 3, 0, 0, 0),
+            new ResultadoIteracion(2, 0, 1, 0, 0, 0),
+            new ResultadoIteracion(4, 0, 2, 0, 0, 0),
+            new ResultadoIteracion(6, 0, 3, 0, 0, 0),
         ];
 
         var perfil = CrearPerfil(cantidadMiniaturas: 3);
@@ -62,10 +62,10 @@ public class CalculadoraMetricasPruebas
     {
         ResultadoIteracion[] resultados =
         [
-            new ResultadoIteracion(2, 1, 0, 0, 0),
-            new ResultadoIteracion(4, 3, 0, 0, 0),
-            new ResultadoIteracion(6, 3, 0, 0, 0),
-            new ResultadoIteracion(8, 2, 0, 0, 0),
+            new ResultadoIteracion(2, 0, 1, 0, 0, 0),
+            new ResultadoIteracion(4, 0, 3, 0, 0, 0),
+            new ResultadoIteracion(6, 0, 3, 0, 0, 0),
+            new ResultadoIteracion(8, 0, 2, 0, 0, 0),
         ];
 
         var perfil = CrearPerfil(cantidadMiniaturas: 3);
@@ -80,10 +80,10 @@ public class CalculadoraMetricasPruebas
     {
         ResultadoIteracion[] resultados =
         [
-            new ResultadoIteracion(1, 0, 0, 0, 0),
-            new ResultadoIteracion(2, 0, 0, 0, 0),
-            new ResultadoIteracion(3, 0, 0, 0, 0),
-            new ResultadoIteracion(4, 0, 0, 0, 0),
+            new ResultadoIteracion(1, 0, 0, 0, 0, 0),
+            new ResultadoIteracion(2, 0, 0, 0, 0, 0),
+            new ResultadoIteracion(3, 0, 0, 0, 0, 0),
+            new ResultadoIteracion(4, 0, 0, 0, 0, 0),
         ];
 
         var perfil = CrearPerfil(cantidadMiniaturas: 4);
@@ -99,7 +99,7 @@ public class CalculadoraMetricasPruebas
     {
         ResultadoIteracion[] resultados =
         [
-            new ResultadoIteracion(5, 1, 0, 0, 0),
+            new ResultadoIteracion(5, 0, 1, 0, 0, 0),
         ];
 
         var perfil = CrearPerfil(cantidadMiniaturas: 1);

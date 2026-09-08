@@ -7,10 +7,12 @@ namespace MathHammer.Api.Simulacion;
 public record PerfilCombate
 {
     public int CantidadAtaques { get; init; }
+    public Contratos.DadosAleatorios? AtaquesAleatorios { get; init; }
     public int ImpactaA { get; init; }
     public int Fuerza { get; init; }
     public int PenetracionArmadura { get; init; }
     public int Danio { get; init; }
+    public Contratos.DadosAleatorios? DanioAleatorio { get; init; }
     public int Resistencia { get; init; }
     public int Salvacion { get; init; }
     public int? SalvacionInvulnerable { get; init; }

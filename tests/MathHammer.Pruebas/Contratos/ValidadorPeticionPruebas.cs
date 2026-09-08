@@ -68,6 +68,83 @@ public class ValidadorPeticionPruebas
         ValidadorPeticion.ObtenerErrores(peticion).Should().ContainMatch("*iteraciones*");
     }
 
+    [Fact]
+    public void ObtenerErrores_ConSoloAtaquesAleatorios_NoDevuelveErrores()
+    {
+        PeticionCombate peticion = CrearPeticion() with
+        {
+            Arma = CrearPeticion().Arma with { CantidadAtaques = 0, AtaquesAleatorios = new DadosAleatorios(1, 6, 0) },
+        };
+
+        ValidadorPeticion.ObtenerErrores(peticion).Should().BeEmpty();
+    }
+
+    [Fact]
+    public void ObtenerErrores_ConSoloDanioAleatorio_NoDevuelveErrores()
+    {
+        PeticionCombate peticion = CrearPeticion() with
+        {
+            Arma = CrearPeticion().Arma with { Danio = 0, DanioAleatorio = new DadosAleatorios(2, 3, 1) },
+        };
+
+        ValidadorPeticion.ObtenerErrores(peticion).Should().BeEmpty();
+    }
+
+    [Fact]
+    public void ObtenerErrores_ConAtaquesFijoYDados_DevuelveError()
+    {
+        PeticionCombate peticion = CrearPeticion() with
+        {
+            Arma = CrearPeticion().Arma with { AtaquesAleatorios = new DadosAleatorios(1, 6, 0) },
+        };
+
+        ValidadorPeticion.ObtenerErrores(peticion).Should().ContainMatch("*ataquesAleatorios*");
+    }
+
+    [Fact]
+    public void ObtenerErrores_ConDanioFijoYDados_DevuelveError()
+    {
+        PeticionCombate peticion = CrearPeticion() with
+        {
+            Arma = CrearPeticion().Arma with { DanioAleatorio = new DadosAleatorios(1, 6, 0) },
+        };
+
+        ValidadorPeticion.ObtenerErrores(peticion).Should().ContainMatch("*danioAleatorio*");
+    }
+
+    [Fact]
+    public void ObtenerErrores_ConAtaquesSinFuente_DevuelveError()
+    {
+        PeticionCombate peticion = CrearPeticion() with
+        {
+            Arma = CrearPeticion().Arma with { CantidadAtaques = 0 },
+        };
+
+        ValidadorPeticion.ObtenerErrores(peticion).Should().ContainMatch("*cantidadAtaques*");
+    }
+
+    [Fact]
+    public void ObtenerErrores_ConDadosCarasInvalidas_DevuelveError()
+    {
+        PeticionCombate peticion = CrearPeticion() with
+        {
+            Arma = CrearPeticion().Arma with { CantidadAtaques = 0, AtaquesAleatorios = new DadosAleatorios(1, 8, 0) },
+        };
+
+        ValidadorPeticion.ObtenerErrores(peticion).Should().ContainMatch("*caras*");
+    }
+
+    [Fact]
+    public void ObtenerErrores_ConDadosSinCantidad_DevuelveError()
+    {
+        PeticionCombate peticion = CrearPeticion() with
+        {
+            Arma = CrearPeticion().Arma with { CantidadAtaques = 0, AtaquesAleatorios = new DadosAleatorios(0, 6, 0) },
+        };
+
+        ValidadorPeticion.ObtenerErrores(peticion).Should().ContainMatch("*cantidadDados*");
+    }
+
     private static PeticionCombate CrearPeticion()
     {
         return new PeticionCombate(

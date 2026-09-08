@@ -1,4 +1,4 @@
-// Tipos que reflejan el contrato de la API (docs/contrato-api.md, versión 1.3).
+// Tipos que reflejan el contrato de la API (docs/contrato-api.md, versión 1.4).
 
 export interface PerfilAtacanteApi {
   nombreUnidad: string
@@ -14,11 +14,19 @@ export interface HabilidadesArmaApi {
   heridasDevastadoras: boolean
 }
 
+export interface DadosApi {
+  cantidadDados: number
+  caras: number
+  modificador: number
+}
+
 export interface PerfilArmaApi {
   cantidadAtaques: number
+  ataquesAleatorios: DadosApi | null
   fuerza: number
   penetracionArmadura: number
   danio: number
+  danioAleatorio: DadosApi | null
   repetirTiradaHerida: boolean
   habilidades: HabilidadesArmaApi
 }

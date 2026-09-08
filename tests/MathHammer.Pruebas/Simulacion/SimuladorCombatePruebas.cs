@@ -1,4 +1,5 @@
 using FluentAssertions;
+using MathHammer.Api.Contratos;
 using MathHammer.Api.Reglas;
 using MathHammer.Api.Simulacion;
 
@@ -121,6 +122,19 @@ public class SimuladorCombatePruebas
     }
 
     [Fact]
+    public void RepiteParaImpactar_ConPenalizacion_RelanzaTodosLosFallidos()
+    {
+        // Impacta a 4+ con -1 → efectivo 5+. Repetición completa de los fallidos:
+        // P = 2/6 + (4/6)·(2/6) = 5/9.
+        var perfil = CrearPerfil(cantidadAtaques: 1000, heridasPorMiniatura: 1000000, repiteParaImpactar: true, penalizacionImpactar: true);
+
+        ResultadoIteracion[] resultados = SimuladorCombate.Simular(perfil, 20000, semilla: 14);
+
+        double mediaImpactos = resultados.Average(r => r.ImpactosLogrados);
+        mediaImpactos.Should().BeApproximately(1000.0 * (5.0 / 9.0), 3.0);
+    }
+
+    [Fact]
     public void Lance_SumeUnoALaTiradaDeHerida()
     {
         // Fuerza = Resistencia → heriría a 4+ (0.5); con Lance herida a 3+ (2/3).
@@ -183,6 +197,76 @@ public class SimuladorCombatePruebas
         mediaHeridas.Should().BeApproximately(1000.0 * (5.0 / 6.0) * 0.75, 3.0);
     }
 
+    [Fact]
+    public void AtaquesAleatorios_D6_ConvergenALaMediaDeAtaques()
+    {
+        // 1D6 ataques (media 3.5) impactando a 2+ (5/6): impactos esperados = 3.5 * 5/6.
+        var perfil = CrearPerfil(cantidadAtaques: 0, heridasPorMiniatura: 1000000, impactaA: 2, ataquesAleatorios: new DadosAleatorios(1, 6, 0));
+
+        ResultadoIteracion[] resultados = SimuladorCombate.Simular(perfil, 20000, semilla: 9);
+
+        double mediaImpactos = resultados.Average(r => r.ImpactosLogrados);
+        mediaImpactos.Should().BeApproximately(3.5 * (5.0 / 6.0), 0.3);
+    }
+
+    [Fact]
+    public void DanioAleatorio_D6_ConvergenALaMediaDeDanio()
+    {
+        // 1000 ataques, impacta 2+ (5/6), hiere 2+ (5/6), falla salvación 4+ (1/2) y daño 1D6 (media 3.5).
+        var perfil = CrearPerfil(cantidadAtaques: 1000, heridasPorMiniatura: 1000000, impactaA: 2, fuerza: 8, resistencia: 4, danio: 0, danioAleatorio: new DadosAleatorios(1, 6, 0));
+
+        ResultadoIteracion[] resultados = SimuladorCombate.Simular(perfil, 20000, semilla: 10);
+
+        double esperado = 1000.0 * (5.0 / 6.0) * (5.0 / 6.0) * 0.5 * 3.5;
+        double mediaDanio = resultados.Average(r => r.HeridasInfligidas);
+        mediaDanio.Should().BeApproximately(esperado, 10.0);
+    }
+
+    [Fact]
+    public void Impactos_NoDependenDeLaCantidadDeMiniaturas()
+    {
+        // Todos los ataques se resuelven siempre; solo el daño se descarta si la
+        // unidad ya está destruida (sin spillover).
+        double impactosEsperados = 40.0 * (5.0 / 6.0);
+
+        var perfilPocas = CrearPerfil(cantidadAtaques: 40, heridasPorMiniatura: 1, cantidadMiniaturas: 1, impactaA: 2, fuerza: 8, resistencia: 4);
+        var perfilMuchas = CrearPerfil(cantidadAtaques: 40, heridasPorMiniatura: 1, cantidadMiniaturas: 20, impactaA: 2, fuerza: 8, resistencia: 4);
+
+        ResultadoIteracion[] pocas = SimuladorCombate.Simular(perfilPocas, 20000, semilla: 11);
+        ResultadoIteracion[] muchas = SimuladorCombate.Simular(perfilMuchas, 20000, semilla: 11);
+
+        double mediaPocas = pocas.Average(r => r.ImpactosLogrados);
+        double mediaMuchas = muchas.Average(r => r.ImpactosLogrados);
+
+        mediaPocas.Should().BeApproximately(impactosEsperados, 3.0);
+        mediaMuchas.Should().BeApproximately(impactosEsperados, 3.0);
+
+        // La unidad de una sola miniatura se destruye siempre (daño acotado a 1);
+        // la de 20 miniaturas recibe ~13.9 heridas (40 · 5/6 · 5/6 · 1/2).
+        pocas.Average(r => r.MiniaturasDestruidas).Should().BeApproximately(1.0, 0.05);
+        muchas.Average(r => r.MiniaturasDestruidas).Should().BeApproximately(13.9, 1.0);
+    }
+
+    [Fact]
+    public void DanioPotencial_NoDependeDeLaCantidadDeMiniaturas()
+    {
+        // El daño potencial muestra todo el daño que podría infligir el ataque,
+        // independientemente de cuántas miniaturas tenga el objetivo.
+        double danioEsperado = 40.0 * (5.0 / 6.0) * (5.0 / 6.0) * 0.5;
+
+        var perfilPocas = CrearPerfil(cantidadAtaques: 40, heridasPorMiniatura: 1, cantidadMiniaturas: 1, impactaA: 2, fuerza: 8, resistencia: 4);
+        var perfilMuchas = CrearPerfil(cantidadAtaques: 40, heridasPorMiniatura: 1, cantidadMiniaturas: 20, impactaA: 2, fuerza: 8, resistencia: 4);
+
+        ResultadoIteracion[] pocas = SimuladorCombate.Simular(perfilPocas, 20000, semilla: 13);
+        ResultadoIteracion[] muchas = SimuladorCombate.Simular(perfilMuchas, 20000, semilla: 13);
+
+        pocas.Average(r => r.DanioPotencial).Should().BeApproximately(danioEsperado, 1.0);
+        muchas.Average(r => r.DanioPotencial).Should().BeApproximately(danioEsperado, 1.0);
+
+        // El daño aplicado sí se acota por las miniaturas reales de la unidad.
+        pocas.Average(r => r.HeridasInfligidas).Should().BeApproximately(1.0, 0.05);
+    }
+
     private static PerfilCombate CrearPerfil(
         int cantidadAtaques,
         int heridasPorMiniatura,
@@ -201,15 +285,19 @@ public class SimuladorCombatePruebas
         int? sensacionDolor = null,
         bool reduccionDanio = false,
         bool penalizacionImpactar = false,
-        bool penalizacionHerir = false)
+        bool penalizacionHerir = false,
+        DadosAleatorios? ataquesAleatorios = null,
+        DadosAleatorios? danioAleatorio = null)
     {
         return new PerfilCombate
         {
             CantidadAtaques = cantidadAtaques,
+            AtaquesAleatorios = ataquesAleatorios,
             ImpactaA = impactaA,
             Fuerza = fuerza,
             PenetracionArmadura = 0,
             Danio = danio,
+            DanioAleatorio = danioAleatorio,
             Resistencia = resistencia,
             Salvacion = 4,
             SalvacionInvulnerable = null,

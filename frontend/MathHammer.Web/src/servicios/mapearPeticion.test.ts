@@ -11,6 +11,9 @@ describe('mapearPeticion', () => {
     expect(peticion).not.toBeNull()
     expect(peticion!.atacante.impactaA).toBe(3)
     expect(peticion!.arma.cantidadAtaques).toBe(8)
+    expect(peticion!.arma.ataquesAleatorios).toBeNull()
+    expect(peticion!.arma.danio).toBe(1)
+    expect(peticion!.arma.danioAleatorio).toBeNull()
     expect(peticion!.arma.penetracionArmadura).toBe(-2)
     expect(peticion!.defensor.salvacion).toBe(4)
     expect(peticion!.defensor.salvacionInvulnerable).toBe(5)
@@ -53,11 +56,35 @@ describe('mapearPeticion', () => {
     expect(peticion).toBeNull()
     expect(errores.join(' ')).toContain('ataques')
   })
+
+  it('mapea los ataques aleatorios cuando la casilla está activa', () => {
+    const { peticion } = mapearPeticion(crearAtacante({ ataquesAleatorios: true, cantidadAtaques: 'D6' }), crearDefensor())
+
+    expect(peticion!.arma.cantidadAtaques).toBe(0)
+    expect(peticion!.arma.ataquesAleatorios).toEqual({ cantidadDados: 1, caras: 6, modificador: 0 })
+  })
+
+  it('mapea el daño aleatorio con expresión compuesta', () => {
+    const { peticion } = mapearPeticion(crearAtacante({ danioAleatorio: true, danio: '2D3+1' }), crearDefensor())
+
+    expect(peticion!.arma.danio).toBe(0)
+    expect(peticion!.arma.danioAleatorio).toEqual({ cantidadDados: 2, caras: 3, modificador: 1 })
+  })
+
+  it('devuelve error si la expresión de dados de ataque no es válida', () => {
+    const { peticion, errores } = mapearPeticion(crearAtacante({ ataquesAleatorios: true, cantidadAtaques: '8' }), crearDefensor())
+
+    expect(peticion).toBeNull()
+    expect(errores.join(' ')).toContain('expresión de dados')
+  })
 })
 
 interface OpcionesAtacante {
   impactaA?: string
   cantidadAtaques?: string
+  danio?: string
+  ataquesAleatorios?: boolean
+  danioAleatorio?: boolean
   golpesSostenidos?: boolean
   valorGolpesSostenidos?: string
 }
@@ -69,7 +96,7 @@ function crearAtacante(opciones: OpcionesAtacante = {}): PerfilAtacante {
     impactaA: opciones.impactaA ?? '3+',
     fuerza: '5',
     penetracionArmadura: '-2',
-    danio: '1',
+    danio: opciones.danio ?? '1',
     habilidades: {
       impactosLetales: false,
       repiteParaImpactar: false,
@@ -78,6 +105,8 @@ function crearAtacante(opciones: OpcionesAtacante = {}): PerfilAtacante {
       lance: false,
       heridasDevastadoras: false,
       golpesSostenidos: opciones.golpesSostenidos ?? false,
+      ataquesAleatorios: opciones.ataquesAleatorios ?? false,
+      danioAleatorio: opciones.danioAleatorio ?? false,
     },
     golpesSostenidos: opciones.valorGolpesSostenidos ?? '1',
   }

@@ -23,6 +23,8 @@ const perfilAtacanteInicial: PerfilAtacante = {
     lance: false,
     heridasDevastadoras: false,
     golpesSostenidos: false,
+    ataquesAleatorios: false,
+    danioAleatorio: false,
   },
   golpesSostenidos: '1',
 }
@@ -83,6 +85,9 @@ export function Aplicacion() {
       </div>
       <div className="barrido-tactico" aria-hidden="true" />
       <header className="cabecera">
+        <div className="logo-mh" role="img" aria-label="MathHammer">
+          <span className="logo-mh__m">M</span><span className="logo-mh__h">H</span>
+        </div>
         <h1><span className="titulo__math">Math</span><span className="titulo__hammer">Hammer</span></h1>
         <SelectorTema tema={tema} alCambiarTema={establecerTema} />
       </header>

@@ -16,10 +16,12 @@ public static class MapeadorPeticion
         return new PerfilCombate
         {
             CantidadAtaques = peticion.Arma.CantidadAtaques,
+            AtaquesAleatorios = peticion.Arma.AtaquesAleatorios,
             ImpactaA = peticion.Atacante.ImpactaA,
             Fuerza = peticion.Arma.Fuerza,
             PenetracionArmadura = peticion.Arma.PenetracionArmadura,
             Danio = peticion.Arma.Danio,
+            DanioAleatorio = peticion.Arma.DanioAleatorio,
             Resistencia = peticion.Defensor.Resistencia,
             Salvacion = peticion.Defensor.Salvacion,
             SalvacionInvulnerable = peticion.Defensor.SalvacionInvulnerable,

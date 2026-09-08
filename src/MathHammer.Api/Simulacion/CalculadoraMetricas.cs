@@ -18,12 +18,12 @@ public static class CalculadoraMetricas
         double heridasEsperadas = resultados.Average(r => r.HeridasLogradas);
         double salvacionesEnemigo = resultados.Average(r => r.SalvacionesLogradas);
 
-        double danioPromedio = resultados.Average(r => r.HeridasInfligidas);
+        double danioPromedio = resultados.Average(r => r.DanioPotencial);
         double miniaturasEliminadas = resultados.Average(r => r.MiniaturasDestruidas);
         double probabilidadMatarUnidad = (double)resultados.Count(r => r.MiniaturasDestruidas == perfil.CantidadMiniaturas) / resultados.Length;
 
         double[] danioOrdenado = resultados
-            .Select(r => (double)r.HeridasInfligidas)
+            .Select(r => (double)r.DanioPotencial)
             .OrderBy(valor => valor)
             .ToArray();
 
