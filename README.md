@@ -130,12 +130,13 @@ flutter pub get
 flutter test
 ```
 
-Para ejecutar contra la API local desde el emulador de Android, la URL por
-defecto es `http://10.0.2.2:5188` (el "localhost" del host visto desde el
-emulador). Para apuntar a otra API, usa `--dart-define`:
+La app apunta por defecto a la API desplegada en Render
+(`https://mathhammer-api.onrender.com`), por lo que funciona en un móvil real
+sin configuración. Para desarrollo local contra la API del equipo (emulador de
+Android), sobrescribe la URL con `--dart-define`:
 
 ```bash
-flutter build apk --dart-define=API_URL=https://mathhammer-api.onrender.com
+flutter build apk --dart-define=API_URL=http://10.0.2.2:5188
 ```
 
 El APK resultante se genera en

@@ -36,11 +36,11 @@
 ## Estado actual
 
 - **Estado:** Completado
-- **Última actualización:** 2026-09-10 12:46 CEST
-- **Tarea:** APK Android generado desde WSL (JDK 17 + Android SDK); proyecto completo.
-- **Objetivo inmediato:** Commit y push de la documentación; instalar el APK en un dispositivo.
+- **Última actualización:** 2026-09-10 13:13 CEST
+- **Tarea:** App móvil: conexión arreglada, datos limpios y clon visual de la web + icono MH.
+- **Objetivo inmediato:** Commit y push de los cambios; instalar el APK nuevo en el móvil.
 - **Bloqueos:** Ninguno.
-- **Próxima acción:** Commit+push de la documentación actualizada.
+- **Próxima acción:** Commit+push de la app móvil actualizada.
 
 ## Contexto del proyecto
 
@@ -151,12 +151,15 @@
 | `frontend/MathHammer.Web/src/servicios/clienteApi.ts` | Cliente HTTP del endpoint de simulación | Completado | 2026-08-29 18:00 CEST |
 | `frontend/MathHammer.Web/src/hooks/usarCalculoCombate.ts` | Hook de estado de cálculo | Completado | 2026-08-29 18:00 CEST |
 | `frontend/MathHammer.Web/src/componentes/PanelResultados.test.tsx` | Tests de render de resultados | Completado | 2026-08-29 18:00 CEST |
-| `mobile/MathHammer.App/lib/main.dart` | Punto de entrada y tema de la app Flutter | Completado | 2026-09-10 11:59 CEST |
+| `mobile/MathHammer.App/lib/main.dart` | Punto de entrada y proveedor de tema de la app Flutter | Completado | 2026-09-10 13:13 CEST |
 | `mobile/MathHammer.App/lib/contratos/modelos.dart` | Tipos del contrato de la API (camelCase) | Completado | 2026-09-10 11:59 CEST |
-| `mobile/MathHammer.App/lib/servicios/cliente_api.dart` | Cliente HTTP del endpoint de simulación | Completado | 2026-09-10 11:59 CEST |
-| `mobile/MathHammer.App/lib/pantallas/pantalla_combate.dart` | Pantalla de combate (formulario + 8 métricas) | Completado | 2026-09-10 11:59 CEST |
-| `mobile/MathHammer.App/test/` | Pruebas Dart (cliente API con MockClient y smoke del widget) | Completado | 2026-09-10 11:59 CEST |
-| `mobile/MathHammer.App/android/` `ios/` `web/` | Plataformas generadas por `flutter create` | Completado | 2026-09-10 11:59 CEST |
+| `mobile/MathHammer.App/lib/servicios/cliente_api.dart` | Cliente HTTP (URL Render por defecto, timeout y errores claros) | Completado | 2026-09-10 13:13 CEST |
+| `mobile/MathHammer.App/lib/pantallas/pantalla_combate.dart` | Pantalla de combate (formulario + 8 métricas, clon de la web) | Completado | 2026-09-10 13:13 CEST |
+| `mobile/MathHammer.App/lib/temas/tema.dart` | 5 temas de color y fuentes (Cinzel/Inter) | Completado | 2026-09-10 13:13 CEST |
+| `mobile/MathHammer.App/lib/widgets/` | Marcos tácticos, panel, campos, botón, selector de tema y resultados | Completado | 2026-09-10 13:13 CEST |
+| `mobile/MathHammer.App/assets/fonts/` | Fuentes Cinzel e Inter (variables) empaquetadas | Completado | 2026-09-10 13:13 CEST |
+| `mobile/MathHammer.App/test/` | Pruebas Dart (cliente API con MockClient y smoke del widget) | Completado | 2026-09-10 13:13 CEST |
+| `mobile/MathHammer.App/android/` `ios/` `web/` | Plataformas generadas por `flutter create` (icono MH en Android) | Completado | 2026-09-10 13:13 CEST |
 
 > Si aparecen archivos de aplicación, pruebas, documentación o configuración,
 > añádelos aquí cuando se inspeccionen o modifiquen.
@@ -239,6 +242,7 @@
 | 2026-09-10 11:59 CEST | Apartado 2 (móvil): instalado Flutter 3.47.3 en `$HOME/flutter`, generado `mobile/MathHammer.App` (android, ios, web) con `flutter create`. Implementados modelos del contrato, `ClienteApi` (URL vía `--dart-define=API_URL`), pantalla de combate con formulario y 8 métricas, y tests con `MockClient`. Añadido job `mobile` al CI. | `mobile/MathHammer.App/*`, `lib/contratos/modelos.dart`, `lib/servicios/cliente_api.dart`, `lib/pantallas/pantalla_combate.dart`, `lib/main.dart`, `test/*`, `pubspec.yaml`, `.github/workflows/ci.yml`, `README.md`, `CONTEXT.md` | Completado; `flutter analyze` sin issues y 4 tests Dart en verde. |
 | 2026-09-10 12:17 CEST | Verificación de Docker (apartado 1): activada la integración WSL; `docker compose up --build -d` levanta api (`:8080`) y web (`:8081`). Verificado `/health`=Healthy, `/`=MathHammer API, `/swagger`=200, web=200, POST end-to-end a través de nginx con 8 métricas y 422 de validación. | Docker (sin cambios de código), `CONTEXT.md` | Completado; el RUNBOOK `docs/despliegue.md` queda validado. |
 | 2026-09-10 12:46 CEST | Build del APK Android desde el WSL: instalado JDK 17 (`~/jdk`) y Android SDK (`~/android-sdk`: platform-tools, platform-36, build-tools 36). `flutter build apk --dart-define=API_URL=https://mathhammer-api.onrender.com` genera `app-release.apk` (48 MB). El NDK lo descargó Gradle automáticamente. | `mobile/MathHammer.App` (sin cambios de código; artefactos en `build/`, ignorados), `README.md`, `CONTEXT.md` | Completado; APK listo para instalar en Android. |
+| 2026-09-10 13:13 CEST | App móvil: arreglado el fallo de conexión (permiso `INTERNET` en el manifest + URL por defecto a Render https + timeout y error claro), datos iniciales limpios (campos vacíos, selectores con "—") y clon visual completo de la web (fuentes Cinzel/Inter empaquetadas, 5 temas, marcos tácticos + barrido animado, paneles/botón/resultados). Icono de la app = monograma MH del favicon. | `android/app/src/main/AndroidManifest.xml`, `android/app/src/main/res/mipmap-*/ic_launcher.png`, `lib/main.dart`, `lib/pantallas/pantalla_combate.dart`, `lib/servicios/cliente_api.dart`, `lib/temas/tema.dart` (nuevo), `lib/widgets/*` (nuevos), `assets/fonts/*` (nuevos), `pubspec.yaml`, `test/pantalla_combate_test.dart`, `web/*`, `README.md`, `CONTEXT.md` | Completado; `flutter analyze` sin issues, 4 tests en verde y APK reconstruido (49 MB). |
 
 ## Verificaciones realizadas
 
@@ -266,16 +270,17 @@
 - Frontend: 9 tests en verde y `npm run build` correcto.
 - Docker: `docker compose up --build` verificado (api `:8080`, web `:8081`); `/health`=Healthy, web=200, simulación end-to-end con 8 métricas y 422 de validación a través del proxy nginx.
 - Móvil (Flutter): `flutter analyze` sin issues y 4 tests Dart en verde.
-- APK Android: `flutter build apk` correcto (48 MB) apuntando a `https://mathhammer-api.onrender.com`. Toolchain del WSL: JDK 17 en `~/jdk`, Android SDK en `~/android-sdk` (env: `JAVA_HOME`, `ANDROID_HOME`, `ANDROID_SDK_ROOT`).
+- APK Android: `flutter build apk` correcto (49 MB) apuntando a `https://mathhammer-api.onrender.com`. Toolchain del WSL: JDK 17 en `~/jdk`, Android SDK en `~/android-sdk` (env: `JAVA_HOME`, `ANDROID_HOME`, `ANDROID_SDK_ROOT`).
+- App móvil (interfaz): clon de la web con Cinzel/Inter, 5 temas, marcos tácticos y barrido animado; campos iniciales vacíos; icono de app = monograma MH.
 
 ## Traspaso a la siguiente sesión
 
-- **Estado al cerrar:** Proyecto completo: backend, web y móvil implementados y verificados; Docker y Render validados; APK Android generado (48 MB). Todos los tests en verde (81 backend, 9 frontend, 4 móvil).
-- **Última tarea realizada:** Instalar la cadena Android en WSL (JDK 17 + Android SDK) y compilar el APK apuntando a la API de Render.
-- **Archivos modificados en esta sesión:** `README.md`, `CONTEXT.md` (el APK se genera en `mobile/MathHammer.App/build/`, ignorado por git).
-- **Pendiente:** Ninguno de código. Opcional: commit+push de estos cambios de documentación; firmar el APK con claves propias para publicar en Google Play.
+- **Estado al cerrar:** App móvil reparada (conexión, datos limpios, clon visual de la web e icono MH) y APK reconstruido (49 MB). Backend (81), web (9) y móvil (4) tests en verde.
+- **Última tarea realizada:** Arreglar el fallo de conexión (permiso INTERNET + URL Render), limpiar datos iniciales, replicar el diseño de la web y generar el icono de app.
+- **Archivos modificados en esta sesión:** `mobile/MathHammer.App/android/app/src/main/AndroidManifest.xml`, `android/app/src/main/res/mipmap-*/ic_launcher.png`, `lib/main.dart`, `lib/pantallas/pantalla_combate.dart`, `lib/servicios/cliente_api.dart`, `lib/temas/tema.dart`, `lib/widgets/*`, `assets/fonts/*`, `pubspec.yaml`, `test/pantalla_combate_test.dart`, `web/*`, `README.md`, `CONTEXT.md`.
+- **Pendiente:** commit+push; instalar el APK nuevo en el móvil para validar la conexión real.
 - **Bloqueos:** Ninguno.
-- **Siguiente paso recomendado:** Commit y push de la documentación; instalar el APK en un dispositivo Android para probarlo.
+- **Siguiente paso recomendado:** Commit y push; verificar la app en el móvil (conexión a Render y aspecto).
 
 ## Historial resumido
 

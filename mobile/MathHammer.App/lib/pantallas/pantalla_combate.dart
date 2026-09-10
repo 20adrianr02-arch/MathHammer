@@ -2,42 +2,54 @@ import 'package:flutter/material.dart';
 
 import '../contratos/modelos.dart';
 import '../servicios/cliente_api.dart';
+import '../temas/tema.dart';
+import '../widgets/boton_angular.dart';
+import '../widgets/campos.dart';
+import '../widgets/marcos_tacticos.dart';
+import '../widgets/panel_marco.dart';
+import '../widgets/panel_resultados.dart';
+import '../widgets/selector_tema.dart';
 
 /// Pantalla de combate: formulario de atacante y defensor, botón de cálculo
 /// y panel de resultados con las 8 métricas.
 class PantallaCombate extends StatefulWidget {
-  const PantallaCombate({super.key, this.clienteApi});
+  const PantallaCombate({super.key, this.clienteApi, this.alCambiarTema});
 
   final ClienteApi? clienteApi;
+  final ValueChanged<NombreTema>? alCambiarTema;
 
   @override
   State<PantallaCombate> createState() => _PantallaCombateState();
 }
 
 class _PantallaCombateState extends State<PantallaCombate> {
-  final _nombreAtacante = TextEditingController(text: 'Escuadra intercesora');
-  final _cantidadAtaques = TextEditingController(text: '8');
-  final _fuerza = TextEditingController(text: '5');
-  final _penetracionArmadura = TextEditingController(text: '-2');
-  final _danio = TextEditingController(text: '1');
+  final _nombreAtacante = TextEditingController();
+  final _cantidadAtaques = TextEditingController();
+  final _fuerza = TextEditingController();
+  final _penetracionArmadura = TextEditingController();
+  final _danio = TextEditingController();
 
-  final _nombreDefensor = TextEditingController(text: 'Guerreros Necrones');
-  final _resistencia = TextEditingController(text: '4');
-  final _heridasPorMiniatura = TextEditingController(text: '2');
-  final _cantidadMiniaturas = TextEditingController(text: '5');
+  final _nombreDefensor = TextEditingController();
+  final _resistencia = TextEditingController();
+  final _heridasPorMiniatura = TextEditingController();
+  final _cantidadMiniaturas = TextEditingController();
 
-  int _impactaA = 3;
-  int _salvacion = 3;
+  int? _impactaA;
+  int? _salvacion;
   int? _salvacionInvulnerable;
-  int? _sensacionDolor;
+  int? _sensacionDolor = 6;
+  int _golpesSostenidos = 1;
 
   bool _repiteParaImpactar = false;
+  bool _repiteUnoParaHerir = false;
   bool _twinLinked = false;
   bool _lance = false;
   bool _golpesLetales = false;
   bool _heridasDevastadoras = false;
+  bool _sustainedHits = false;
 
   bool _reduccionDanio = false;
+  bool _sinDolor = false;
   bool _penalizacionImpactar = false;
   bool _penalizacionHerir = false;
 
@@ -88,48 +100,54 @@ class _PantallaCombateState extends State<PantallaCombate> {
   }
 
   PeticionCombate? _construirPeticion() {
-    final cantidadAtaques = int.tryParse(_cantidadAtaques.text.trim());
-    final fuerza = int.tryParse(_fuerza.text.trim());
-    final penetracionArmadura = int.tryParse(_penetracionArmadura.text.trim());
-    final danio = int.tryParse(_danio.text.trim());
-    final resistencia = int.tryParse(_resistencia.text.trim());
-    final heridasPorMiniatura = int.tryParse(_heridasPorMiniatura.text.trim());
-    final cantidadMiniaturas = int.tryParse(_cantidadMiniaturas.text.trim());
+    if (_impactaA == null) {
+      return _errorValidacion('Selecciona IMPACTA A.');
+    }
+    if (_salvacion == null) {
+      return _errorValidacion('Selecciona la salvación.');
+    }
 
+    final cantidadAtaques = int.tryParse(_cantidadAtaques.text.trim());
     if (cantidadAtaques == null || cantidadAtaques < 1) {
-      _mostrarError('La cantidad de ataques debe ser al menos 1.');
-      return null;
+      return _errorValidacion('La cantidad de ataques debe ser al menos 1.');
     }
+
+    final fuerza = int.tryParse(_fuerza.text.trim());
     if (fuerza == null || fuerza < 1) {
-      _mostrarError('La fuerza debe ser al menos 1.');
-      return null;
+      return _errorValidacion('La fuerza debe ser al menos 1.');
     }
+
+    final penetracionArmadura = int.tryParse(_penetracionArmadura.text.trim());
     if (penetracionArmadura == null) {
-      _mostrarError('La penetración de armadura no es válida.');
-      return null;
+      return _errorValidacion('La penetración de armadura no es válida.');
     }
+
+    final danio = int.tryParse(_danio.text.trim());
     if (danio == null || danio < 1) {
-      _mostrarError('El daño debe ser al menos 1.');
-      return null;
+      return _errorValidacion('El daño debe ser al menos 1.');
     }
+
+    final resistencia = int.tryParse(_resistencia.text.trim());
     if (resistencia == null || resistencia < 1) {
-      _mostrarError('La resistencia debe ser al menos 1.');
-      return null;
+      return _errorValidacion('La resistencia debe ser al menos 1.');
     }
+
+    final heridasPorMiniatura = int.tryParse(_heridasPorMiniatura.text.trim());
     if (heridasPorMiniatura == null || heridasPorMiniatura < 1) {
-      _mostrarError('Las heridas por miniatura deben ser al menos 1.');
-      return null;
+      return _errorValidacion('Las heridas por miniatura deben ser al menos 1.');
     }
+
+    final cantidadMiniaturas = int.tryParse(_cantidadMiniaturas.text.trim());
     if (cantidadMiniaturas == null || cantidadMiniaturas < 1) {
-      _mostrarError('La cantidad de miniaturas debe ser al menos 1.');
-      return null;
+      return _errorValidacion('La cantidad de miniaturas debe ser al menos 1.');
     }
 
     return PeticionCombate(
       atacante: Atacante(
-        nombreUnidad: _nombreAtacante.text.trim().isEmpty ? 'Atacante' : _nombreAtacante.text.trim(),
-        impactaA: _impactaA,
+        nombreUnidad: _nombreAtacante.text.trim(),
+        impactaA: _impactaA!,
         repiteParaImpactar: _repiteParaImpactar,
+        repiteUnoParaHerir: _repiteUnoParaHerir,
       ),
       arma: Arma(
         cantidadAtaques: cantidadAtaques,
@@ -138,15 +156,16 @@ class _PantallaCombateState extends State<PantallaCombate> {
         danio: danio,
         repetirTiradaHerida: _twinLinked,
         lanza: _lance,
+        golpesSostenidos: _sustainedHits ? _golpesSostenidos : 0,
         golpesLetales: _golpesLetales,
         heridasDevastadoras: _heridasDevastadoras,
       ),
       defensor: Defensor(
-        nombreUnidad: _nombreDefensor.text.trim().isEmpty ? 'Defensor' : _nombreDefensor.text.trim(),
+        nombreUnidad: _nombreDefensor.text.trim(),
         resistencia: resistencia,
-        salvacion: _salvacion,
+        salvacion: _salvacion!,
         salvacionInvulnerable: _salvacionInvulnerable,
-        sensacionDolor: _sensacionDolor,
+        sensacionDolor: _sinDolor ? _sensacionDolor : null,
         heridasPorMiniatura: heridasPorMiniatura,
         cantidadMiniaturas: cantidadMiniaturas,
         reduccionDanio: _reduccionDanio,
@@ -157,8 +176,9 @@ class _PantallaCombateState extends State<PantallaCombate> {
     );
   }
 
-  void _mostrarError(String mensaje) {
+  PeticionCombate? _errorValidacion(String mensaje) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(mensaje)));
+    return null;
   }
 
   @override
@@ -177,230 +197,236 @@ class _PantallaCombateState extends State<PantallaCombate> {
 
   @override
   Widget build(BuildContext context) {
+    final tema = TemaAlcance.de(context);
+    final hayResultado = _resultado != null || _cargando || _error != null;
+
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _cabecera(),
-              const SizedBox(height: 16),
-              _panelAtacante(),
-              const SizedBox(height: 16),
-              _panelDefensor(),
-              const SizedBox(height: 20),
-              FilledButton(
-                onPressed: _cargando ? null : _calcular,
-                style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFFc3272b),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  textStyle: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 2),
-                ),
-                child: Text(_cargando ? 'CALCULANDO...' : 'CALCULAR COMBATE'),
+      body: Stack(
+        children: [
+          _fondo(tema),
+          const Positioned.fill(child: MarcosTacticos()),
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 26, 20, 40),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _cabecera(tema),
+                  const SizedBox(height: 28),
+                  _panelAtacante(),
+                  const SizedBox(height: 22),
+                  _panelDefensor(),
+                  const SizedBox(height: 32),
+                  Center(child: BotonAngular(texto: _cargando ? 'CALCULANDO...' : 'CALCULAR COMBATE', alPulsar: _calcular, deshabilitado: _cargando)),
+                  if (hayResultado) ...[
+                    const SizedBox(height: 36),
+                    Divider(color: bordeCabecera, height: 1),
+                    const SizedBox(height: 40),
+                    PanelResultados(resultado: _resultado, cargando: _cargando, error: _error),
+                  ],
+                ],
               ),
-              if (_error != null) ...[
-                const SizedBox(height: 16),
-                Text(_error!, textAlign: TextAlign.center, style: const TextStyle(color: Colors.redAccent)),
-              ],
-              if (_resultado != null) ...[
-                const SizedBox(height: 20),
-                _panelResultados(_resultado!),
-              ],
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _cabecera() {
+  Widget _fondo(TemaMathHammer tema) {
+    return Positioned.fill(
+      child: Stack(
+        children: [
+          Container(color: fondo),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: const Alignment(0, -0.75),
+                radius: 1.1,
+                colors: [tema.acentoNiebla, const Color(0x00030712)],
+              ),
+            ),
+            child: const SizedBox.expand(),
+          ),
+          const Positioned.fill(child: CustomPaint(painter: _PintorRejilla())),
+        ],
+      ),
+    );
+  }
+
+  Widget _cabecera(TemaMathHammer tema) {
     return Column(
       children: [
-        Text(
-          'MathHammer',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 36,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 2,
-            color: Theme.of(context).colorScheme.primary,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Math', style: cinzel(tamano: 38, color: tema.acentoClaro)),
+            Text('Hammer', style: cinzel(tamano: 38, color: tema.acentoFuerte)),
+          ],
         ),
-        const SizedBox(height: 4),
-        const Text(
-          'SIMULADOR DE COMBATE 40K',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 11, letterSpacing: 2, color: Colors.white70),
-        ),
+        const SizedBox(height: 14),
+        SelectorTema(tema: tema, alCambiarTema: widget.alCambiarTema ?? (_) {}),
       ],
     );
   }
 
   Widget _panelAtacante() {
-    return _panel(
-      'ATACANTE',
-      children: [
-        _campoTexto(_nombreAtacante, 'Nombre de unidad'),
-        _campoNumero(_cantidadAtaques, 'Cantidad de ataques'),
-        _selector(_impactaA, 'Impacta a', 2, 6, (valor) => _impactaA = valor),
-        _campoNumero(_fuerza, 'Fuerza'),
-        _campoNumero(_penetracionArmadura, 'AP'),
-        _campoNumero(_danio, 'Daño'),
-        _habilidad('REPITE PARA IMPACTAR', _repiteParaImpactar, (v) => _repiteParaImpactar = v),
-        _habilidad('TWIN-LINKED', _twinLinked, (v) => _twinLinked = v),
-        _habilidad('LANCE (+1 AL HERIR)', _lance, (v) => _lance = v),
-        _habilidad('LETHAL HITS', _golpesLetales, (v) => _golpesLetales = v),
-        _habilidad('DEVASTATING WOUNDS', _heridasDevastadoras, (v) => _heridasDevastadoras = v),
-      ],
-    );
-  }
-
-  Widget _panelDefensor() {
-    return _panel(
-      'DEFENSOR',
-      children: [
-        _campoTexto(_nombreDefensor, 'Nombre de unidad'),
-        _campoNumero(_resistencia, 'Resistencia'),
-        _selector(_salvacion, 'Salvación', 2, 6, (valor) => _salvacion = valor),
-        _selectorNullable(_salvacionInvulnerable, 'Salvación invulnerable', (valor) => _salvacionInvulnerable = valor),
-        _selectorNullable(_sensacionDolor, 'Feel No Pain', (valor) => _sensacionDolor = valor, base: 3),
-        _campoNumero(_heridasPorMiniatura, 'Heridas por miniatura'),
-        _campoNumero(_cantidadMiniaturas, 'Cantidad de miniaturas'),
-        _habilidad('-1 AL DAÑO', _reduccionDanio, (v) => _reduccionDanio = v),
-        _habilidad('-1 AL IMPACTAR', _penalizacionImpactar, (v) => _penalizacionImpactar = v),
-        _habilidad('-1 AL HERIR', _penalizacionHerir, (v) => _penalizacionHerir = v),
-      ],
-    );
-  }
-
-  Widget _panel(String titulo, {required List<Widget> children}) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: const Color(0xFF111416),
-        border: Border(top: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1)),
-      ),
+    return PanelMarco(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(titulo, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 2)),
-          const SizedBox(height: 12),
-          ...children,
+          _tituloPanel('ATACANTE'),
+          _rejillaCampos([
+            CampoTexto(etiqueta: 'Nombre de unidad', controlador: _nombreAtacante, tipo: TextInputType.text),
+            CampoTexto(etiqueta: 'Cantidad de ataques', controlador: _cantidadAtaques),
+            CampoSelector(etiqueta: 'Impacta a', valor: _impactaA, opciones: const [2, 3, 4, 5, 6], alCambiar: (valor) => setState(() => _impactaA = valor)),
+            CampoTexto(etiqueta: 'Fuerza', controlador: _fuerza),
+            CampoTexto(etiqueta: 'AP', controlador: _penetracionArmadura),
+            CampoTexto(etiqueta: 'Daño', controlador: _danio),
+          ]),
+          _subcabecera('HABILIDADES OFENSIVAS'),
+          _habilidades([
+            Habilidad(texto: 'LETHAL HITS', activa: _golpesLetales, alCambiar: (valor) => setState(() => _golpesLetales = valor)),
+            Habilidad(texto: 'REPITE PARA IMPACTAR', activa: _repiteParaImpactar, alCambiar: (valor) => setState(() => _repiteParaImpactar = valor)),
+            Habilidad(texto: 'TWIN-LINKED', activa: _twinLinked, alCambiar: (valor) => setState(() => _twinLinked = valor)),
+            Habilidad(texto: 'REPETIR 1 PARA HERIR', activa: _repiteUnoParaHerir, alCambiar: (valor) => setState(() => _repiteUnoParaHerir = valor)),
+            Habilidad(texto: 'LANCE (+1 AL HERIR)', activa: _lance, alCambiar: (valor) => setState(() => _lance = valor)),
+            Habilidad(texto: 'DEVASTATING WOUNDS', activa: _heridasDevastadoras, alCambiar: (valor) => setState(() => _heridasDevastadoras = valor)),
+            Habilidad(
+              texto: 'SUSTAINED HITS',
+              activa: _sustainedHits,
+              alCambiar: (valor) => setState(() => _sustainedHits = valor),
+              selector: true,
+              valorSelector: _golpesSostenidos,
+              alCambiarSelector: (valor) => setState(() => _golpesSostenidos = valor),
+            ),
+          ]),
         ],
       ),
     );
   }
 
-  Widget _campoTexto(TextEditingController controlador, String etiqueta) {
-    return TextField(
-      controller: controlador,
-      decoration: _decoracion(etiqueta),
-    );
-  }
-
-  Widget _campoNumero(TextEditingController controlador, String etiqueta) {
-    return TextField(
-      controller: controlador,
-      keyboardType: const TextInputType.numberWithOptions(signed: true),
-      decoration: _decoracion(etiqueta),
-    );
-  }
-
-  InputDecoration _decoracion(String etiqueta) {
-    return InputDecoration(
-      labelText: etiqueta,
-      labelStyle: const TextStyle(fontSize: 12, letterSpacing: 1, color: Colors.white70),
-      filled: true,
-      fillColor: const Color(0xFF0c0e10),
-      border: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFF484d4e))),
-      enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Color(0xFF484d4e))),
-    );
-  }
-
-  Widget _selector(int valor, String etiqueta, int desde, int hasta, ValueChanged<int> alCambiar) {
-    return DropdownButtonFormField<int>(
-      initialValue: valor,
-      decoration: _decoracion(etiqueta),
-      items: [for (var opcion = desde; opcion <= hasta; opcion++) DropdownMenuItem(value: opcion, child: Text('$opcion+'))],
-      onChanged: (nuevo) {
-        if (nuevo != null) {
-          setState(() => alCambiar(nuevo));
-        }
-      },
-    );
-  }
-
-  Widget _selectorNullable(int? valor, String etiqueta, ValueChanged<int?> alCambiar, {int base = 2}) {
-    return DropdownButtonFormField<int?>(
-      initialValue: valor,
-      decoration: _decoracion(etiqueta),
-      items: [
-        const DropdownMenuItem<int?>(value: null, child: Text('Ninguna')),
-        for (var opcion = base; opcion <= 6; opcion++) DropdownMenuItem<int?>(value: opcion, child: Text('$opcion+')),
-      ],
-      onChanged: (nuevo) => setState(() => alCambiar(nuevo)),
-    );
-  }
-
-  Widget _habilidad(String texto, bool activa, ValueChanged<bool> alCambiar) {
-    return Material(
-      color: Colors.transparent,
-      child: CheckboxListTile(
-        value: activa,
-        onChanged: (nuevo) => setState(() => alCambiar(nuevo ?? false)),
-        title: Text(texto, style: const TextStyle(fontSize: 13, letterSpacing: 1)),
-        contentPadding: EdgeInsets.zero,
-        dense: true,
-        controlAffinity: ListTileControlAffinity.leading,
-      ),
-    );
-  }
-
-  Widget _panelResultados(ResultadoCombate resultado) {
-    final metricas = resultado.metricas;
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: const Color(0xFF111416),
-        border: Border(top: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1)),
-      ),
+  Widget _panelDefensor() {
+    return PanelMarco(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text('RESULTADOS DE COMBATE', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 2)),
-          const SizedBox(height: 12),
-          _tarjeta('Impactos esperados', _decimal(metricas.impactosEsperados)),
-          _tarjeta('Heridas esperadas', _decimal(metricas.heridasEsperadas)),
-          _tarjeta('Salvaciones del enemigo', _decimal(metricas.salvacionesEnemigo)),
-          _tarjeta('Prob. de matar unidad', '${(metricas.probabilidadMatarUnidad * 100).toStringAsFixed(1)}%'),
-          _tarjeta('Miniaturas eliminadas', _decimal(metricas.miniaturasEliminadas)),
-          _tarjeta('Daño medio esperado', _decimal(metricas.danioMedioEsperado)),
-          _tarjeta('P25 (Rango mínimo)', _decimal(metricas.percentil25)),
-          _tarjeta('P75 (Rango máximo)', _decimal(metricas.percentil75)),
-          const SizedBox(height: 8),
-          Text(
-            '${resultado.iteracionesEjecutadas} iteraciones · ${resultado.duracionMilisegundos} ms',
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 11, color: Colors.white70),
+          _tituloPanel('DEFENSOR'),
+          _rejillaCampos([
+            CampoTexto(etiqueta: 'Nombre de unidad', controlador: _nombreDefensor, tipo: TextInputType.text),
+            CampoTexto(etiqueta: 'Resistencia', controlador: _resistencia),
+            CampoTexto(etiqueta: 'Heridas por miniatura', controlador: _heridasPorMiniatura),
+            CampoTexto(etiqueta: 'Cantidad de miniaturas', controlador: _cantidadMiniaturas),
+            CampoSelector(etiqueta: 'Salvación', valor: _salvacion, opciones: const [2, 3, 4, 5, 6], alCambiar: (valor) => setState(() => _salvacion = valor)),
+            CampoSelector(etiqueta: 'Salvación invulnerable', valor: _salvacionInvulnerable, opciones: const [2, 3, 4, 5, 6], alCambiar: (valor) => setState(() => _salvacionInvulnerable = valor)),
+          ]),
+          _subcabecera('HABILIDADES DEFENSIVAS'),
+          _habilidades([
+            Habilidad(texto: '-1 AL DAÑO', activa: _reduccionDanio, alCambiar: (valor) => setState(() => _reduccionDanio = valor)),
+            Habilidad(
+              texto: 'FEEL NO PAIN',
+              activa: _sinDolor,
+              alCambiar: (valor) => setState(() => _sinDolor = valor),
+              selector: true,
+              valorSelector: _sensacionDolor,
+              alCambiarSelector: (valor) => setState(() => _sensacionDolor = valor),
+              opcionesSelector: const [3, 4, 5, 6],
+            ),
+            Habilidad(texto: '-1 AL IMPACTAR', activa: _penalizacionImpactar, alCambiar: (valor) => setState(() => _penalizacionImpactar = valor)),
+            Habilidad(texto: '-1 AL HERIR', activa: _penalizacionHerir, alCambiar: (valor) => setState(() => _penalizacionHerir = valor)),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  Widget _tituloPanel(String texto) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 22),
+      child: Text(texto, style: inter(tamano: 24, peso: 700, color: Colors.white, espaciado: 2.5)),
+    );
+  }
+
+  Widget _subcabecera(String texto) {
+    final tema = TemaAlcance.de(context);
+    return Padding(
+      padding: const EdgeInsets.only(top: 24, bottom: 16),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 2,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [tema.acento, Colors.transparent]),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(texto, style: inter(tamano: 14, peso: 700, color: tema.acentoFuerte, espaciado: 1.4)),
           ),
         ],
       ),
     );
   }
 
-  Widget _tarjeta(String etiqueta, String valor) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(etiqueta, style: const TextStyle(fontSize: 13, color: Colors.white70)),
-          Text(valor, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-        ],
-      ),
+  Widget _rejillaCampos(List<Widget> campos) {
+    return LayoutBuilder(
+      builder: (context, restricciones) {
+        const separacion = 13.0;
+        final ancho = (restricciones.maxWidth - separacion) / 2;
+        final nombre = campos.first;
+        final resto = campos.skip(1).toList();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            nombre,
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: separacion,
+              runSpacing: 16,
+              children: [
+                for (final campo in resto) SizedBox(width: ancho, child: campo),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 
-  String _decimal(double valor) => valor.toStringAsFixed(2);
+  Widget _habilidades(List<Widget> habilidades) {
+    return LayoutBuilder(
+      builder: (context, restricciones) {
+        const separacion = 14.0;
+        final ancho = (restricciones.maxWidth - separacion) / 2;
+        return Wrap(
+          spacing: separacion,
+          runSpacing: 12,
+          children: [
+            for (final habilidad in habilidades) SizedBox(width: ancho, child: habilidad),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _PintorRejilla extends CustomPainter {
+  const _PintorRejilla();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final pintura = Paint()
+      ..color = Colors.white.withValues(alpha: 0.025)
+      ..strokeWidth = 1;
+    for (double x = 0; x < size.width; x += 5) {
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), pintura);
+    }
+    for (double y = 0; y < size.height; y += 7) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), pintura);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
