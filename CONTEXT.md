@@ -237,6 +237,7 @@
 | 2026-09-08 22:01 CEST | Reversión de los dados aleatorios: se elimina toda la funcionalidad D3/D6 (ataques y daño) y se vuelve a valores fijos ("daño plano"). Se conservan los fixes de fidelidad (impactos independientes de miniaturas, daño potencial, repeticiones). | `PerfilArma.cs`, `PerfilCombate.cs`, `ValidadorPeticion.cs`, `MapeadorPeticion.cs`, `SimuladorCombate.cs`, `ResultadoIteracion.cs` (se mantiene `DanioPotencial`), borrados `DadosAleatorios.cs`, `ResolverDados.cs`, `ResolverDadosPruebas.cs`; frontend `tipos.ts`, `ControlesCombate.tsx`, `PanelAtacante.tsx`, `Aplicacion.tsx`, `mapearPeticion.ts`, `estilos.css`, `mapearPeticion.test.ts`; `docs/contrato-api.md`, `README.md`, `CONTEXT.md` | Completado; 81 tests backend y 9 frontend en verde, `npm run build` correcto. |
 | 2026-09-10 11:50 CEST | Apartado 1 (RUNBOOK): creado `docs/despliegue.md` con despliegue local en Docker (integración WSL, compose, verificación) y en Render (blueprint, URLs, checklist, troubleshooting). Referenciado desde `README.md`. | `docs/despliegue.md`, `README.md`, `CONTEXT.md` | Completado. Pendiente: verificar `docker compose up --build` cuando se active la integración WSL. |
 | 2026-09-10 11:59 CEST | Apartado 2 (móvil): instalado Flutter 3.47.3 en `$HOME/flutter`, generado `mobile/MathHammer.App` (android, ios, web) con `flutter create`. Implementados modelos del contrato, `ClienteApi` (URL vía `--dart-define=API_URL`), pantalla de combate con formulario y 8 métricas, y tests con `MockClient`. Añadido job `mobile` al CI. | `mobile/MathHammer.App/*`, `lib/contratos/modelos.dart`, `lib/servicios/cliente_api.dart`, `lib/pantallas/pantalla_combate.dart`, `lib/main.dart`, `test/*`, `pubspec.yaml`, `.github/workflows/ci.yml`, `README.md`, `CONTEXT.md` | Completado; `flutter analyze` sin issues y 4 tests Dart en verde. |
+| 2026-09-10 12:17 CEST | Verificación de Docker (apartado 1): activada la integración WSL; `docker compose up --build -d` levanta api (`:8080`) y web (`:8081`). Verificado `/health`=Healthy, `/`=MathHammer API, `/swagger`=200, web=200, POST end-to-end a través de nginx con 8 métricas y 422 de validación. | Docker (sin cambios de código), `CONTEXT.md` | Completado; el RUNBOOK `docs/despliegue.md` queda validado. |
 
 ## Verificaciones realizadas
 
@@ -260,9 +261,10 @@
 - Resultados: panel de tarjetas con encabezado `RESULTADOS DE COMBATE` y legibilidad en blanco.
 - Servidor local: Vite responde en `http://localhost:5173` con `HTTP 200`.
 - Backend .NET: solución compilada con SDK `9.0.203`; `dotnet build` sin errores y `dotnet test` con 81 pruebas en verde.
-- Contrato API: `docs/contrato-api.md` v1.4, con 8 métricas de respuesta, habilidades aplicadas, daño potencial (sin acotar) y sin histogramas.
 - Daño potencial: impactos/heridas/salvaciones independientes del tamaño de la unidad; `danioMedioEsperado` y percentiles muestran el daño potencial; `miniaturasEliminadas` y `probabilidadMatarUnidad` se acotan por la unidad.
 - Frontend: 9 tests en verde y `npm run build` correcto.
+- Docker: `docker compose up --build` verificado (api `:8080`, web `:8081`); `/health`=Healthy, web=200, simulación end-to-end con 8 métricas y 422 de validación a través del proxy nginx.
+- Móvil (Flutter): `flutter analyze` sin issues y 4 tests Dart en verde.
 
 ## Traspaso a la siguiente sesión
 
@@ -270,7 +272,7 @@
 - **Última tarea realizada:** Implementar la app móvil Flutter (modelos, cliente API, pantalla de combate, tests) y añadir el job `mobile` al CI.
 - **Archivos modificados en esta sesión:** `docs/despliegue.md` (nuevo), `README.md`, `.github/workflows/ci.yml`, `mobile/MathHammer.App/*` (generado por `flutter create` + código de la app), `CONTEXT.md`.
 - **Pendiente:** commit + push del apartado 1 y 2; verificar `docker compose` (activar integración WSL); generar el APK Android (requiere Android Studio en el equipo del usuario).
-- **Bloqueos:** Docker requiere activar la integración WSL; APK Android requiere Android Studio/SDK.
+- **Bloqueos:** APK Android requiere Android Studio/SDK.
 - **Siguiente paso recomendado:** Commit y push de los apartados 1 y 2, y verificación de `docker compose up --build`.
 
 ## Historial resumido
