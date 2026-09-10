@@ -36,11 +36,11 @@
 ## Estado actual
 
 - **Estado:** Completado
-- **Última actualización:** 2026-09-08 22:01 CEST
-- **Tarea:** Reversión de los dados aleatorios D3/D6 (ataques y daño) → valores fijos; se conservan los fixes de fidelidad 40k.
-- **Objetivo inmediato:** Cerrar apartados 1 (RUNBOOK `docs/despliegue.md`) y 2 (app Flutter).
-- **Bloqueos:** Docker Desktop requiere activar la integración WSL (apartado 1); Flutter/Android SDK no instalados (apartado 2).
-- **Próxima acción:** Apartado 1 (RUNBOOK `docs/despliegue.md`) y apartado 2 (instalar Flutter y crear la app).
+- **Última actualización:** 2026-09-10 11:59 CEST
+- **Tarea:** Apartado 2 — app móvil Flutter implementada y testeada; job de CI añadido.
+- **Objetivo inmediato:** Commit y push del apartado 2; verificar `docker compose` cuando se active la integración WSL.
+- **Bloqueos:** APK Android requiere Android Studio/SDK (solo en el equipo del usuario); Docker requiere activar la integración WSL.
+- **Próxima acción:** Commit+push del apartado 2 y del RUNBOOK del apartado 1.
 
 ## Contexto del proyecto
 
@@ -77,7 +77,7 @@
 | `BACKLOG.md` | Historias de usuario del proyecto | Completado | 2026-08-26 22:50 CEST |
 | `docs/contrato-api.md` | Contrato JSON de entrada y salida de la API de combate | Completado | 2026-09-08 14:19 CEST |
 | `docs/despliegue.md` | RUNBOOK de despliegue (Docker local, Render, verificación y troubleshooting) | Completado | 2026-09-10 11:50 CEST |
-| `.github/workflows/ci.yml` | CI: build y test de backend y frontend | Completado | 2026-08-29 19:00 CEST |
+| `.github/workflows/ci.yml` | CI: build y test de backend, frontend y móvil (Flutter) | Completado | 2026-09-10 11:59 CEST |
 | `docker-compose.yml` | Orquestación de API y web | Completado | 2026-08-29 19:00 CEST |
 | `src/MathHammer.Api/Dockerfile` | Imagen de la API | Completado | 2026-08-29 19:00 CEST |
 | `frontend/MathHammer.Web/Dockerfile` | Imagen del frontend (nginx) | Completado | 2026-08-29 19:00 CEST |
@@ -151,10 +151,12 @@
 | `frontend/MathHammer.Web/src/servicios/clienteApi.ts` | Cliente HTTP del endpoint de simulación | Completado | 2026-08-29 18:00 CEST |
 | `frontend/MathHammer.Web/src/hooks/usarCalculoCombate.ts` | Hook de estado de cálculo | Completado | 2026-08-29 18:00 CEST |
 | `frontend/MathHammer.Web/src/componentes/PanelResultados.test.tsx` | Tests de render de resultados | Completado | 2026-08-29 18:00 CEST |
-| `mobile/MathHammer.App/lib/` | Futura ubicación del código fuente Flutter | Completado | 2026-08-26 23:10 CEST |
-| `mobile/MathHammer.App/test/` | Futura ubicación de pruebas Flutter | Completado | 2026-08-26 23:10 CEST |
-| `mobile/MathHammer.App/android/` | Futura configuración nativa Android | Completado | 2026-08-26 23:10 CEST |
-| `mobile/MathHammer.App/ios/` | Futura configuración nativa iOS | Completado | 2026-08-26 23:10 CEST |
+| `mobile/MathHammer.App/lib/main.dart` | Punto de entrada y tema de la app Flutter | Completado | 2026-09-10 11:59 CEST |
+| `mobile/MathHammer.App/lib/contratos/modelos.dart` | Tipos del contrato de la API (camelCase) | Completado | 2026-09-10 11:59 CEST |
+| `mobile/MathHammer.App/lib/servicios/cliente_api.dart` | Cliente HTTP del endpoint de simulación | Completado | 2026-09-10 11:59 CEST |
+| `mobile/MathHammer.App/lib/pantallas/pantalla_combate.dart` | Pantalla de combate (formulario + 8 métricas) | Completado | 2026-09-10 11:59 CEST |
+| `mobile/MathHammer.App/test/` | Pruebas Dart (cliente API con MockClient y smoke del widget) | Completado | 2026-09-10 11:59 CEST |
+| `mobile/MathHammer.App/android/` `ios/` `web/` | Plataformas generadas por `flutter create` | Completado | 2026-09-10 11:59 CEST |
 
 > Si aparecen archivos de aplicación, pruebas, documentación o configuración,
 > añádelos aquí cuando se inspeccionen o modifiquen.
@@ -234,6 +236,7 @@
 | 2026-09-08 21:44 CEST | Fix fidelidad: las repeticiones de dados fallidos (`repiteParaImpactar`, `Twin-linked`) relanzan todos los dados que fallan **tras el modificador** (antes solo `roll < requerido`). | `Simulacion/SimuladorCombate.cs`, `tests/.../SimuladorCombatePruebas.cs` | Completado; 95 tests en verde (nuevo test `RepiteParaImpactar_ConPenalizacion_RelanzaTodosLosFallidos`). |
 | 2026-09-08 22:01 CEST | Reversión de los dados aleatorios: se elimina toda la funcionalidad D3/D6 (ataques y daño) y se vuelve a valores fijos ("daño plano"). Se conservan los fixes de fidelidad (impactos independientes de miniaturas, daño potencial, repeticiones). | `PerfilArma.cs`, `PerfilCombate.cs`, `ValidadorPeticion.cs`, `MapeadorPeticion.cs`, `SimuladorCombate.cs`, `ResultadoIteracion.cs` (se mantiene `DanioPotencial`), borrados `DadosAleatorios.cs`, `ResolverDados.cs`, `ResolverDadosPruebas.cs`; frontend `tipos.ts`, `ControlesCombate.tsx`, `PanelAtacante.tsx`, `Aplicacion.tsx`, `mapearPeticion.ts`, `estilos.css`, `mapearPeticion.test.ts`; `docs/contrato-api.md`, `README.md`, `CONTEXT.md` | Completado; 81 tests backend y 9 frontend en verde, `npm run build` correcto. |
 | 2026-09-10 11:50 CEST | Apartado 1 (RUNBOOK): creado `docs/despliegue.md` con despliegue local en Docker (integración WSL, compose, verificación) y en Render (blueprint, URLs, checklist, troubleshooting). Referenciado desde `README.md`. | `docs/despliegue.md`, `README.md`, `CONTEXT.md` | Completado. Pendiente: verificar `docker compose up --build` cuando se active la integración WSL. |
+| 2026-09-10 11:59 CEST | Apartado 2 (móvil): instalado Flutter 3.47.3 en `$HOME/flutter`, generado `mobile/MathHammer.App` (android, ios, web) con `flutter create`. Implementados modelos del contrato, `ClienteApi` (URL vía `--dart-define=API_URL`), pantalla de combate con formulario y 8 métricas, y tests con `MockClient`. Añadido job `mobile` al CI. | `mobile/MathHammer.App/*`, `lib/contratos/modelos.dart`, `lib/servicios/cliente_api.dart`, `lib/pantallas/pantalla_combate.dart`, `lib/main.dart`, `test/*`, `pubspec.yaml`, `.github/workflows/ci.yml`, `README.md`, `CONTEXT.md` | Completado; `flutter analyze` sin issues y 4 tests Dart en verde. |
 
 ## Verificaciones realizadas
 
@@ -263,12 +266,12 @@
 
 ## Traspaso a la siguiente sesión
 
-- **Estado al cerrar:** Cierre de sesión 2026-09-08 22:05. Lógica, backend y frontend web completos y verificados (81 tests backend, 9 frontend, build OK). Reversión de los dados D3/D6 aplicada y pendiente de subir. Cambios commiteados en local sin push.
-- **Última tarea realizada:** Eliminar la funcionalidad de dados aleatorios (ataques y daño) y volver a valores fijos, conservando los fixes de fidelidad 40k.
-- **Archivos modificados en esta sesión:** backend `PerfilArma.cs`, `PerfilCombate.cs`, `ValidadorPeticion.cs`, `MapeadorPeticion.cs`, `SimuladorCombate.cs` (borrados `DadosAleatorios.cs`, `ResolverDados.cs` y sus pruebas); frontend `tipos.ts`, `ControlesCombate.tsx`, `PanelAtacante.tsx`, `Aplicacion.tsx`, `mapearPeticion.ts`, `estilos.css`, `mapearPeticion.test.ts`, `index.html`, `public/favicon.svg`; `docs/contrato-api.md`, `README.md`, `CONTEXT.md`.
-- **Pendiente de subir a GitHub (sin push):** reversión de dados D3/D6 + título/logo de la web. El usuario pidió no subir por ahora.
-- **Bloqueos:** Docker Desktop requiere activar la integración WSL (apartado 1); Flutter/Android SDK no instalados (apartado 2).
-- **Siguiente paso recomendado:** Apartado 1 (crear `docs/despliegue.md`) y apartado 2 (instalar Flutter en WSL y crear la app móvil).
+- **Estado al cerrar:** Apartado 1 (RUNBOOK) y apartado 2 (app Flutter) implementados. Backend (81 tests), frontend web (9 tests + build) y móvil (4 tests Dart + analyze limpio). Cambios pendientes de commit y push.
+- **Última tarea realizada:** Implementar la app móvil Flutter (modelos, cliente API, pantalla de combate, tests) y añadir el job `mobile` al CI.
+- **Archivos modificados en esta sesión:** `docs/despliegue.md` (nuevo), `README.md`, `.github/workflows/ci.yml`, `mobile/MathHammer.App/*` (generado por `flutter create` + código de la app), `CONTEXT.md`.
+- **Pendiente:** commit + push del apartado 1 y 2; verificar `docker compose` (activar integración WSL); generar el APK Android (requiere Android Studio en el equipo del usuario).
+- **Bloqueos:** Docker requiere activar la integración WSL; APK Android requiere Android Studio/SDK.
+- **Siguiente paso recomendado:** Commit y push de los apartados 1 y 2, y verificación de `docker compose up --build`.
 
 ## Historial resumido
 

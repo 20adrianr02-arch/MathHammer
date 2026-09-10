@@ -49,3 +49,25 @@ jobs:
 
       - name: Compilar
         run: npm run build
+
+  mobile:
+    name: Móvil (Flutter)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile/MathHammer.App
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+
+      - name: Configurar Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Analizar
+        run: flutter analyze
+
+      - name: Probar
+        run: flutter test

@@ -50,6 +50,7 @@ ASP.NET Core Minimal API (C# / .NET 9)
 src/MathHammer.Api/          Backend (Contratos, Reglas, Simulacion)
 tests/MathHammer.Pruebas/    Pruebas unitarias del backend
 frontend/MathHammer.Web/     Aplicación web
+mobile/MathHammer.App/       Aplicación móvil (Flutter)
 docs/contrato-api.md         Contrato de datos de la API (v1.4)
 ```
 
@@ -86,6 +87,9 @@ npm run dev -- --host 0.0.0.0 --port 5173
 
 # Frontend
 cd frontend/MathHammer.Web && npm test
+
+# Móvil (Flutter)
+cd mobile/MathHammer.App && flutter test
 ```
 
 ## Docker
@@ -115,5 +119,21 @@ con las 8 métricas y el resumen. Detalle completo en
 ## Estado
 
 - Motor matemático, simulación y habilidades: implementados y probados.
-- Frontend web conectado a la API: implementado.
-- Aplicación móvil (Flutter): pendiente.
+- Frontend web conectado a la API: implementado y desplegado en Render.
+- Aplicación móvil (Flutter): implementada (formulario + cliente API + 8 métricas, con tests). El build del APK requiere Android Studio/SDK en el equipo.
+
+## App móvil (Flutter)
+
+```bash
+cd mobile/MathHammer.App
+flutter pub get
+flutter test
+```
+
+Para ejecutar contra la API local desde el emulador de Android, la URL por
+defecto es `http://10.0.2.2:5188` (el "localhost" del host visto desde el
+emulador). Para apuntar a otra API, usa `--dart-define`:
+
+```bash
+flutter build apk --dart-define=API_URL=https://mathhammer-api.onrender.com
+```
