@@ -137,3 +137,6 @@ emulador). Para apuntar a otra API, usa `--dart-define`:
 ```bash
 flutter build apk --dart-define=API_URL=https://mathhammer-api.onrender.com
 ```
+
+El APK resultante se genera en
+`mobile/MathHammer.App/build/app/outputs/flutter-apk/app-release.apk`.

@@ -36,11 +36,11 @@
 ## Estado actual
 
 - **Estado:** Completado
-- **Última actualización:** 2026-09-10 11:59 CEST
-- **Tarea:** Apartado 2 — app móvil Flutter implementada y testeada; job de CI añadido.
-- **Objetivo inmediato:** Commit y push del apartado 2; verificar `docker compose` cuando se active la integración WSL.
-- **Bloqueos:** APK Android requiere Android Studio/SDK (solo en el equipo del usuario); Docker requiere activar la integración WSL.
-- **Próxima acción:** Commit+push del apartado 2 y del RUNBOOK del apartado 1.
+- **Última actualización:** 2026-09-10 12:46 CEST
+- **Tarea:** APK Android generado desde WSL (JDK 17 + Android SDK); proyecto completo.
+- **Objetivo inmediato:** Commit y push de la documentación; instalar el APK en un dispositivo.
+- **Bloqueos:** Ninguno.
+- **Próxima acción:** Commit+push de la documentación actualizada.
 
 ## Contexto del proyecto
 
@@ -238,6 +238,7 @@
 | 2026-09-10 11:50 CEST | Apartado 1 (RUNBOOK): creado `docs/despliegue.md` con despliegue local en Docker (integración WSL, compose, verificación) y en Render (blueprint, URLs, checklist, troubleshooting). Referenciado desde `README.md`. | `docs/despliegue.md`, `README.md`, `CONTEXT.md` | Completado. Pendiente: verificar `docker compose up --build` cuando se active la integración WSL. |
 | 2026-09-10 11:59 CEST | Apartado 2 (móvil): instalado Flutter 3.47.3 en `$HOME/flutter`, generado `mobile/MathHammer.App` (android, ios, web) con `flutter create`. Implementados modelos del contrato, `ClienteApi` (URL vía `--dart-define=API_URL`), pantalla de combate con formulario y 8 métricas, y tests con `MockClient`. Añadido job `mobile` al CI. | `mobile/MathHammer.App/*`, `lib/contratos/modelos.dart`, `lib/servicios/cliente_api.dart`, `lib/pantallas/pantalla_combate.dart`, `lib/main.dart`, `test/*`, `pubspec.yaml`, `.github/workflows/ci.yml`, `README.md`, `CONTEXT.md` | Completado; `flutter analyze` sin issues y 4 tests Dart en verde. |
 | 2026-09-10 12:17 CEST | Verificación de Docker (apartado 1): activada la integración WSL; `docker compose up --build -d` levanta api (`:8080`) y web (`:8081`). Verificado `/health`=Healthy, `/`=MathHammer API, `/swagger`=200, web=200, POST end-to-end a través de nginx con 8 métricas y 422 de validación. | Docker (sin cambios de código), `CONTEXT.md` | Completado; el RUNBOOK `docs/despliegue.md` queda validado. |
+| 2026-09-10 12:46 CEST | Build del APK Android desde el WSL: instalado JDK 17 (`~/jdk`) y Android SDK (`~/android-sdk`: platform-tools, platform-36, build-tools 36). `flutter build apk --dart-define=API_URL=https://mathhammer-api.onrender.com` genera `app-release.apk` (48 MB). El NDK lo descargó Gradle automáticamente. | `mobile/MathHammer.App` (sin cambios de código; artefactos en `build/`, ignorados), `README.md`, `CONTEXT.md` | Completado; APK listo para instalar en Android. |
 
 ## Verificaciones realizadas
 
@@ -265,15 +266,16 @@
 - Frontend: 9 tests en verde y `npm run build` correcto.
 - Docker: `docker compose up --build` verificado (api `:8080`, web `:8081`); `/health`=Healthy, web=200, simulación end-to-end con 8 métricas y 422 de validación a través del proxy nginx.
 - Móvil (Flutter): `flutter analyze` sin issues y 4 tests Dart en verde.
+- APK Android: `flutter build apk` correcto (48 MB) apuntando a `https://mathhammer-api.onrender.com`. Toolchain del WSL: JDK 17 en `~/jdk`, Android SDK en `~/android-sdk` (env: `JAVA_HOME`, `ANDROID_HOME`, `ANDROID_SDK_ROOT`).
 
 ## Traspaso a la siguiente sesión
 
-- **Estado al cerrar:** Apartado 1 (RUNBOOK) y apartado 2 (app Flutter) implementados. Backend (81 tests), frontend web (9 tests + build) y móvil (4 tests Dart + analyze limpio). Cambios pendientes de commit y push.
-- **Última tarea realizada:** Implementar la app móvil Flutter (modelos, cliente API, pantalla de combate, tests) y añadir el job `mobile` al CI.
-- **Archivos modificados en esta sesión:** `docs/despliegue.md` (nuevo), `README.md`, `.github/workflows/ci.yml`, `mobile/MathHammer.App/*` (generado por `flutter create` + código de la app), `CONTEXT.md`.
-- **Pendiente:** commit + push del apartado 1 y 2; verificar `docker compose` (activar integración WSL); generar el APK Android (requiere Android Studio en el equipo del usuario).
-- **Bloqueos:** APK Android requiere Android Studio/SDK.
-- **Siguiente paso recomendado:** Commit y push de los apartados 1 y 2, y verificación de `docker compose up --build`.
+- **Estado al cerrar:** Proyecto completo: backend, web y móvil implementados y verificados; Docker y Render validados; APK Android generado (48 MB). Todos los tests en verde (81 backend, 9 frontend, 4 móvil).
+- **Última tarea realizada:** Instalar la cadena Android en WSL (JDK 17 + Android SDK) y compilar el APK apuntando a la API de Render.
+- **Archivos modificados en esta sesión:** `README.md`, `CONTEXT.md` (el APK se genera en `mobile/MathHammer.App/build/`, ignorado por git).
+- **Pendiente:** Ninguno de código. Opcional: commit+push de estos cambios de documentación; firmar el APK con claves propias para publicar en Google Play.
+- **Bloqueos:** Ninguno.
+- **Siguiente paso recomendado:** Commit y push de la documentación; instalar el APK en un dispositivo Android para probarlo.
 
 ## Historial resumido
 
