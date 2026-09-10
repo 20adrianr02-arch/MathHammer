@@ -213,11 +213,14 @@ class _PantallaCombateState extends State<PantallaCombate> {
                 children: [
                   _cabecera(tema),
                   const SizedBox(height: 28),
-                  _panelAtacante(),
-                  const SizedBox(height: 22),
-                  _panelDefensor(),
+                  _seccionPaneles(),
                   const SizedBox(height: 32),
-                  Center(child: BotonAngular(texto: _cargando ? 'CALCULANDO...' : 'CALCULAR COMBATE', alPulsar: _calcular, deshabilitado: _cargando)),
+                  Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 360),
+                      child: BotonAngular(texto: _cargando ? 'CALCULANDO...' : 'CALCULAR COMBATE', alPulsar: _calcular, deshabilitado: _cargando),
+                    ),
+                  ),
                   if (hayResultado) ...[
                     const SizedBox(height: 36),
                     Divider(color: bordeCabecera, height: 1),
@@ -254,19 +257,62 @@ class _PantallaCombateState extends State<PantallaCombate> {
     );
   }
 
-  Widget _cabecera(TemaMathHammer tema) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+  Widget _seccionPaneles() {
+    return LayoutBuilder(
+      builder: (context, restricciones) {
+        final dosColumnas = restricciones.maxWidth >= 760;
+        if (!dosColumnas) {
+          return Column(
+            children: [
+              _panelAtacante(),
+              const SizedBox(height: 22),
+              _panelDefensor(),
+            ],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Math', style: cinzel(tamano: 38, color: tema.acentoClaro)),
-            Text('Hammer', style: cinzel(tamano: 38, color: tema.acentoFuerte)),
+            Expanded(child: _panelAtacante()),
+            const SizedBox(width: 22),
+            Expanded(child: _panelDefensor()),
           ],
-        ),
-        const SizedBox(height: 14),
-        SelectorTema(tema: tema, alCambiarTema: widget.alCambiarTema ?? (_) {}),
+        );
+      },
+    );
+  }
+
+  Widget _cabecera(TemaMathHammer tema) {
+    final escritorio = MediaQuery.sizeOf(context).width >= 640;
+    final titulo = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('Math', style: cinzel(tamano: 38, color: tema.acentoClaro)),
+        Text('Hammer', style: cinzel(tamano: 38, color: tema.acentoFuerte)),
       ],
+    );
+    final selector = SelectorTema(tema: tema, alCambiarTema: widget.alCambiarTema ?? (_) {});
+
+    if (!escritorio) {
+      return Column(
+        children: [
+          titulo,
+          const SizedBox(height: 14),
+          selector,
+        ],
+      );
+    }
+
+    return SizedBox(
+      height: 60,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          titulo,
+          Align(alignment: Alignment.centerRight, child: selector),
+        ],
+      ),
     );
   }
 
@@ -372,8 +418,7 @@ class _PantallaCombateState extends State<PantallaCombate> {
   Widget _rejillaCampos(List<Widget> campos) {
     return LayoutBuilder(
       builder: (context, restricciones) {
-        const separacion = 13.0;
-        final ancho = (restricciones.maxWidth - separacion) / 2;
+        final columnas = restricciones.maxWidth < 300 ? 1 : 2;
         final nombre = campos.first;
         final resto = campos.skip(1).toList();
         return Column(
@@ -381,13 +426,7 @@ class _PantallaCombateState extends State<PantallaCombate> {
           children: [
             nombre,
             const SizedBox(height: 16),
-            Wrap(
-              spacing: separacion,
-              runSpacing: 16,
-              children: [
-                for (final campo in resto) SizedBox(width: ancho, child: campo),
-              ],
-            ),
+            _envolver(resto, columnas, restricciones.maxWidth, 13, 16),
           ],
         );
       },
@@ -397,16 +436,33 @@ class _PantallaCombateState extends State<PantallaCombate> {
   Widget _habilidades(List<Widget> habilidades) {
     return LayoutBuilder(
       builder: (context, restricciones) {
-        const separacion = 14.0;
-        final ancho = (restricciones.maxWidth - separacion) / 2;
-        return Wrap(
-          spacing: separacion,
-          runSpacing: 12,
-          children: [
-            for (final habilidad in habilidades) SizedBox(width: ancho, child: habilidad),
-          ],
-        );
+        final columnas = restricciones.maxWidth < 340 ? 1 : 2;
+        return _envolver(habilidades, columnas, restricciones.maxWidth, 14, 12);
       },
+    );
+  }
+
+  /// Distribuye [hijos] en [columnas] columnas (1 = apilados verticalmente).
+  Widget _envolver(List<Widget> hijos, int columnas, double anchoMax, double separacion, double sepVertical) {
+    if (columnas <= 1) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var indice = 0; indice < hijos.length; indice++) ...[
+            if (indice > 0) SizedBox(height: sepVertical),
+            hijos[indice],
+          ],
+        ],
+      );
+    }
+
+    final ancho = (anchoMax - separacion * (columnas - 1)) / columnas;
+    return Wrap(
+      spacing: separacion,
+      runSpacing: sepVertical,
+      children: [
+        for (final hijo in hijos) SizedBox(width: ancho, child: hijo),
+      ],
     );
   }
 }

@@ -26,8 +26,8 @@ class BotonAngular extends StatelessWidget {
         child: InkWell(
           onTap: deshabilitado ? null : alPulsar,
           child: Container(
-            constraints: const BoxConstraints(minWidth: 260),
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 29),
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
             alignment: Alignment.center,
             decoration: BoxDecoration(
               border: Border.all(color: tema.acentoClaro),

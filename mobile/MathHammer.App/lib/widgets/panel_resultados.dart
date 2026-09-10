@@ -55,7 +55,26 @@ class PanelResultados extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, restricciones) {
         const separacion = 14.0;
-        final ancho = (restricciones.maxWidth - separacion) / 2;
+        final anchoMax = restricciones.maxWidth;
+        final columnas = anchoMax < 300
+            ? 1
+            : anchoMax < 620
+                ? 2
+                : anchoMax < 940
+                    ? 3
+                    : 4;
+        if (columnas <= 1) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var indice = 0; indice < tarjetas.length; indice++) ...[
+                if (indice > 0) const SizedBox(height: separacion),
+                tarjetas[indice],
+              ],
+            ],
+          );
+        }
+        final ancho = (anchoMax - separacion * (columnas - 1)) / columnas;
         return Wrap(
           spacing: separacion,
           runSpacing: separacion,
