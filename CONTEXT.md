@@ -76,6 +76,7 @@
 | `LICENSE` | Licencia MIT del proyecto | Existente | 2026-08-26 22:04 CEST |
 | `BACKLOG.md` | Historias de usuario del proyecto | Completado | 2026-08-26 22:50 CEST |
 | `docs/contrato-api.md` | Contrato JSON de entrada y salida de la API de combate | Completado | 2026-09-08 14:19 CEST |
+| `docs/despliegue.md` | RUNBOOK de despliegue (Docker local, Render, verificación y troubleshooting) | Completado | 2026-09-10 11:50 CEST |
 | `.github/workflows/ci.yml` | CI: build y test de backend y frontend | Completado | 2026-08-29 19:00 CEST |
 | `docker-compose.yml` | Orquestación de API y web | Completado | 2026-08-29 19:00 CEST |
 | `src/MathHammer.Api/Dockerfile` | Imagen de la API | Completado | 2026-08-29 19:00 CEST |
@@ -232,6 +233,7 @@
 | 2026-09-08 21:44 CEST | Daño potencial: nuevo `DanioPotencial` en `ResultadoIteracion`; `danioMedioEsperado` y percentiles muestran el daño potencial del ataque (sin acotar), mientras que `miniaturasEliminadas` y `probabilidadMatarUnidad` se acotan por la unidad. | `Simulacion/ResultadoIteracion.cs`, `Simulacion/SimuladorCombate.cs`, `Simulacion/CalculadoraMetricas.cs`, `docs/contrato-api.md`, `tests/.../CalculadoraMetricasPruebas.cs`, `SimuladorCombatePruebas.cs` | Completado; 94 tests en verde. |
 | 2026-09-08 21:44 CEST | Fix fidelidad: las repeticiones de dados fallidos (`repiteParaImpactar`, `Twin-linked`) relanzan todos los dados que fallan **tras el modificador** (antes solo `roll < requerido`). | `Simulacion/SimuladorCombate.cs`, `tests/.../SimuladorCombatePruebas.cs` | Completado; 95 tests en verde (nuevo test `RepiteParaImpactar_ConPenalizacion_RelanzaTodosLosFallidos`). |
 | 2026-09-08 22:01 CEST | Reversión de los dados aleatorios: se elimina toda la funcionalidad D3/D6 (ataques y daño) y se vuelve a valores fijos ("daño plano"). Se conservan los fixes de fidelidad (impactos independientes de miniaturas, daño potencial, repeticiones). | `PerfilArma.cs`, `PerfilCombate.cs`, `ValidadorPeticion.cs`, `MapeadorPeticion.cs`, `SimuladorCombate.cs`, `ResultadoIteracion.cs` (se mantiene `DanioPotencial`), borrados `DadosAleatorios.cs`, `ResolverDados.cs`, `ResolverDadosPruebas.cs`; frontend `tipos.ts`, `ControlesCombate.tsx`, `PanelAtacante.tsx`, `Aplicacion.tsx`, `mapearPeticion.ts`, `estilos.css`, `mapearPeticion.test.ts`; `docs/contrato-api.md`, `README.md`, `CONTEXT.md` | Completado; 81 tests backend y 9 frontend en verde, `npm run build` correcto. |
+| 2026-09-10 11:50 CEST | Apartado 1 (RUNBOOK): creado `docs/despliegue.md` con despliegue local en Docker (integración WSL, compose, verificación) y en Render (blueprint, URLs, checklist, troubleshooting). Referenciado desde `README.md`. | `docs/despliegue.md`, `README.md`, `CONTEXT.md` | Completado. Pendiente: verificar `docker compose up --build` cuando se active la integración WSL. |
 
 ## Verificaciones realizadas
 

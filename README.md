@@ -100,8 +100,11 @@ docker compose up --build
 ## Despliegue
 
 El repositorio incluye `render.yaml` como blueprint para [Render](https://render.com).
-Ajusta las URLs y conecta tu repositorio para desplegar la API (Docker) y el
-frontend (sitio estático).
+La API (Docker) y el frontend (sitio estático) están publicados en
+`https://mathhammer-web.onrender.com` y `https://mathhammer-api.onrender.com`.
+
+El **manual completo de despliegue** (Docker local, Render, verificación y
+solución de problemas) está en [`docs/despliegue.md`](docs/despliegue.md).
 
 ## Contrato de la API
 
